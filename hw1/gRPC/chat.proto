@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package grpc;
+
+message Empty {}
+
+message Message {
+    string name = 1;
+    string message = 2;
+}
+
+service ChatServer {
+    // This bi-directional stream makes it possible to send and receive Messages between 2 persons
+    rpc ChatStream (Empty) returns (stream Message);
+    rpc SendMessage (Message) returns (Empty);
+}
