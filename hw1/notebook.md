@@ -5,7 +5,6 @@
 
 At the initial stage, we are thinking of using simply a string to encode everything, but we quickly realized that it’s very hard to format it so that we can encoder/decode it easily. For example, if there’s a message from user A to user B containing the body “Hello”, and we format it in string format as “A|B|Hello”, then we can decode it using the “|” as the split separator, however if the message body also include |, then the separator will not work.
 
-  
 
 Eventually we decided to use JSON, and encode it into binary format for the transmission of data between server and client. Reasons are:
 

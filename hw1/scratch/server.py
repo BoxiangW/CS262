@@ -33,15 +33,6 @@ def create_msg(cmd, src="", to="", body="", err=False):
 
 
 def receive(conn):
-    # chunks = []
-    # bytes_recd = 0
-    # while bytes_recd < MSGLEN:
-    #     chunk = conn.recv(min(MSGLEN - bytes_recd, 2048))
-    #     if chunk == b'':
-    #         raise RuntimeError("socket connection broken")
-    #     chunks.append(chunk)
-    #     bytes_recd = bytes_recd + len(chunk)
-    # return b''.join(chunks)
     return conn.recv(MSGLEN)
 
 # a function to handle client connections

@@ -19,6 +19,7 @@ def create_msg(cmd, src="", to="", body=""):
     }
     return json.dumps(msg).encode()
 
+# class for the client
 class ChatClient:
     def __init__(self, server_host, server_port):
         self.server_host = server_host
@@ -26,6 +27,7 @@ class ChatClient:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.connect((server_host, server_port))
         self.username = None
+        self.login_err = False
 
     def login(self, username, password):
         if self.username is None:
@@ -66,41 +68,60 @@ client = ChatClient("localhost", PORT)
 def handle_user():
     # Loop until the user chooses to exit
     while True:
-        # Print the available commands
         print("Available commands:")
-        print("0. Login")
-        print("1. Send a message")
-        print("2. List accounts")
-        print("3. Create an account")
-        print("4. Delete an account")
-        print("5. Exit")
+        if not client.username:
+            print("0. Login")
+            print("1. Create an account")
+            print("2. Exit")
 
-        # Prompt the user for input
-        choice = input("Enter a command number (0-5): ")
+            # Prompt the user for input
+            choice = input("Enter a command number (0-2): ")
 
-        # Call the appropriate client function based on the user input
-        if choice == "0":
-            username = input("Enter your username: ")
-            password = input("Enter your password: ")
-            client.login(username, password)
-        elif choice == "1":
-            recipient = input("Enter the recipient's username: ")
-            message = input("Enter the message: ")
-            client.send_message(recipient, message)
-        elif choice == "2":
-            username = input("Enter a matching wildcard (optional): ")
-            client.list_accounts(username)
-        elif choice == "3":
-            username = input("Enter the username to create: ")
-            password = input("Enter a password: ")
-            client.create_account(username, password)
-        elif choice == "4":
-            client.delete_account()
-        elif choice == "5":
-            client.close()
-            os._exit(1)
+            # Call the appropriate client function based on the user input
+            if choice == "0":
+                username = input("Enter your username: ")
+                password = input("Enter your password: ")
+                client.login(username, password)
+                while not client.username:
+                    if client.login_err:
+                        client.login_err = False
+                        break
+
+            elif choice == "1":
+                username = input("Enter the username to create: ")
+                password = input("Enter a password: ")
+                client.create_account(username, password)
+            elif choice == "2":
+                client.close()
+                os._exit(1)
+            else:
+                print("Invalid command. Please try again.")
+
         else:
-            print("Invalid command. Please try again.")
+            # Print the available commands
+            print("0. Send a message")
+            print("1. List accounts")
+            print("2. Delete an account")
+            print("3. Log off")
+
+            # Prompt the user for input
+            choice = input("Enter a command number (0-3): ")
+
+            # Call the appropriate client function based on the user input
+            if choice == "0":
+                recipient = input("Enter the recipient's username: ")
+                message = input("Enter the message: ")
+                client.send_message(recipient, message)
+            elif choice == "1":
+                username = input("Enter a matching wildcard (optional): ")
+                client.list_accounts(username)
+            elif choice == "2":
+                client.delete_account()
+            elif choice == "3":
+                client.username = None
+            else:
+                print("Invalid command. Please try again.")
+
 
 def handle_message():
     while True:
@@ -111,6 +132,7 @@ def handle_message():
 
         if msg["cmd"] == "login":
             if msg["error"]:
+                client.login_err = True
                 print("Failed to login: {}. Please try again.".format(msg["body"]))
             else:
                 print("Logged in successfully.")
