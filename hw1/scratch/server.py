@@ -288,3 +288,4 @@ class ChatServer:
 
 if __name__ == "__main__":
     chat_server = ChatServer()
+    chat_server.start()
