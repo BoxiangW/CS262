@@ -53,7 +53,7 @@ class ChatServer(rpc.ChatServerServicer):
         print("[List] {}: {}".format(request.username, request.wildcard))
         matching_accounts = fnmatch.filter(
             list(self.accounts.keys()), request.wildcard)
-        matching_accounts = ",".join(matching_accounts)
+        matching_accounts = ", ".join(matching_accounts)
         n = chat.Reply()
         n.message = matching_accounts
         n.error = False

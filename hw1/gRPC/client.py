@@ -42,9 +42,9 @@ class Client:
             n.message = message
             reply = self.conn.SendMessage(n)  # send the Message to the server
             if reply.error:
-                print("Error: {}".format(reply.message))
+                print("[Error]: {}".format(reply.message))
             else:
-                print(reply.message)
+                print("[Send]: {}".format(reply.message))
 
     def list_accounts(self):
         wildcard = input("Enter a wildcard (optional): ")
@@ -55,9 +55,9 @@ class Client:
         n.wildcard = wildcard
         reply = self.conn.SendListAccounts(n)
         if reply.error:
-            print("Error: {}".format(reply.message))
+            print("[Error]: {}".format(reply.message))
         else:
-            print(reply.message)
+            print("[List]: {}".format(reply.message))
 
     def create_account(self):
         username = input("Enter the username to create: ")
@@ -68,7 +68,7 @@ class Client:
             n.username = username
             reply = self.conn.SendCreateAccount(n)
             if reply.error:
-                print("Error: {}".format(reply.message))
+                print("[Error]: {}".format(reply.message))
             else:
                 print(reply.message)
                 self.username = username
@@ -83,9 +83,9 @@ class Client:
         n.username = self.username
         reply = self.conn.SendDeleteAccount(n)
         if reply.error:
-            print("Error: {}".format(reply.message))
+            print("[Error]: {}".format(reply.message))
         else:
-            print(reply.message)
+            print("[Delete]: {}".format(reply.message))
             exit()
 
     def login(self):
@@ -97,9 +97,9 @@ class Client:
             n.username = username
             reply = self.conn.SendLogin(n)
             if reply.error:
-                print("Error: {}".format(reply.message))
+                print("[Error]: {}".format(reply.message))
             else:
-                print(reply.message)
+                print("[Login]: {}".format(reply.message))
                 self.username = username
                 self.listener = threading.Thread(target=self._start_stream,
                                                  daemon=True)
@@ -111,9 +111,9 @@ class Client:
         n.username = self.username
         reply = self.conn.SendLogout(n)
         if reply.error:
-            print("Error: {}".format(reply.message))
+            print("[Error]: {}".format(reply.message))
         else:
-            print(reply.message)
+            print("[Logout]: {}".format(reply.message))
             exit()
 
     def first_loop(self):
