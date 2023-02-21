@@ -101,12 +101,18 @@ class ChatServer(rpc.ChatServerServicer):
     def SendDeleteAccount(self, request: chat.DeleteAccount, context):
         # this is only for the server console
         print("[Delete] {}".format(request.username))
-        del self.accounts[request.username]
-        del self.logout_accounts[request.username]
-        n = chat.Reply()
-        n.message = "Account deleted"
-        n.error = False
-        return n
+        if len(self.logout_accounts[request.username]) > 0:
+            n = chat.Reply()
+            n.message = "You have messages to deliver"
+            n.error = True
+            return n
+        else:
+            del self.accounts[request.username]
+            del self.logout_accounts[request.username]
+            n = chat.Reply()
+            n.message = "Account deleted"
+            n.error = False
+            return n
 
     def SendLogin(self, request: chat.Login, context):
         # this is only for the server console
