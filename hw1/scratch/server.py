@@ -17,7 +17,9 @@ user_info = {}
 # json encoded message: {"cmd": ..., "from": .., "to": ..., "body": ..., "err": ...}
 
 # a message generator function
-def create_msg(cmd, src="", to="", body = "", err=False):
+
+
+def create_msg(cmd, src="", to="", body="", err=False):
     msg = {
         "cmd": cmd,
         "from": src,
@@ -28,6 +30,8 @@ def create_msg(cmd, src="", to="", body = "", err=False):
     return json.dumps(msg).encode()
 
 # a message receiver, according to <https://docs.python.org/3/howto/sockets.html>
+
+
 def receive(conn):
     # chunks = []
     # bytes_recd = 0
@@ -41,6 +45,8 @@ def receive(conn):
     return conn.recv(MSGLEN)
 
 # a function to handle client connections
+
+
 def handle_client(conn, addr):
     print(f"[NEW CONNECTION] {addr} connected.")
 
@@ -61,15 +67,17 @@ def handle_client(conn, addr):
         # handle log in command
         if cmd == "login":
             if (username not in user_info) or (user_info[username] != parts["body"]):
-                conn.send(create_msg(cmd, body="Username/Password error", err=True))
+                conn.send(create_msg(
+                    cmd, body="Username/Password error", err=True))
             else:
                 conn.send(create_msg(cmd, body="Login successful", to=username))
 
         # handle create account command
         elif cmd == "create":
             # check if username already exists
-            if username in user_info:
-                conn.send(create_msg(cmd, body="Username already exists", err=True))
+            if username in users:
+                conn.send(create_msg(
+                    cmd, body="Username already exists", err=True))
             else:
                 # create new user account
                 user_info[username] = parts["body"]
@@ -118,7 +126,8 @@ def handle_client(conn, addr):
             if username not in users:
                 conn.send(create_msg(cmd, body="User does not exist", err=True))
             elif username in users and len(users[username]) > 0:
-                conn.send(create_msg(cmd, body="Undelivered messages exist", err=True))
+                conn.send(create_msg(
+                    cmd, body="Undelivered messages exist", err=True))
             else:
                 # delete user account
                 del users[username]
@@ -133,6 +142,7 @@ def handle_client(conn, addr):
 
     conn.close()
 
+
 # create server socket and start listening for client connections
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((HOST, PORT))
@@ -143,8 +153,7 @@ print(f"[LISTENING] Server is listening on {HOST}:{PORT}")
 while True:
     # accept client connection
     conn, addr = server.accept()
-    
+
     # start a new thread to handle the connection
     thread = threading.Thread(target=handle_client, args=(conn, addr))
     thread.start()
-
