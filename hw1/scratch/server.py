@@ -45,9 +45,10 @@ class ChatServer:
         self.active_users = set([])
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind((host, port))
+    
+    def start(self):
         self.server.listen()
-        print(f"[LISTENING] Server is listening on {host}:{port}")
-
+        print(f"[LISTENING] Server is listening on {self.host}:{self.port}")
         while True:
             # accept client connection
             conn, addr = self.server.accept()

@@ -2,6 +2,7 @@ import unittest
 import threading
 import socket
 import time
+import json
 
 from server import ChatServer
 
