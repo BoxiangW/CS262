@@ -23,7 +23,7 @@ class Client:
         n = chat.Id()
         n.username = self.username
         for note in self.conn.ChatStream(n):
-            print("R[{}] {}".format(note.username, note.message))
+            print("\nR[{}] {}".format(note.username, note.message))
 
     def send_message(self):
         try:
