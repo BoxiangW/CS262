@@ -117,7 +117,6 @@ class ChatServer(rpc.ChatServerServicer):
             n.error = False
             return n
         else:
-            self.accounts[request.username] = []
             n = chat.Reply()
             n.message = "Username not found"
             n.error = True
