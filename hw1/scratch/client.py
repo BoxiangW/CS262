@@ -62,7 +62,8 @@ class ChatClient:
 PORT=56789
 
 # Create an instance of the ChatClient class
-client = ChatClient("localhost", PORT)
+host = input("Enter host ip address: ")
+client = ChatClient(host, PORT)
 
 # handles user interaction
 def handle_user():
