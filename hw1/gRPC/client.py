@@ -11,7 +11,7 @@ PORT = 56789
 
 class Client:
 
-    def __init__(self, host='localhost'):
+    def __init__(self, host):
         # create a gRPC channel
         channel = grpc.insecure_channel(host + ':' + str(PORT))
         self.conn = rpc.ChatServerStub(channel)
@@ -86,9 +86,7 @@ class Client:
             print("Error: {}".format(reply.message))
         else:
             print(reply.message)
-            self.stream.cancel()
-            self.listener.join()
-            del self.username
+            exit()
 
     def login(self):
         username = input("Enter the username to login: ")
@@ -116,9 +114,7 @@ class Client:
             print("Error: {}".format(reply.message))
         else:
             print(reply.message)
-            self.stream.cancel()
-            self.listener.join()
-            del self.username
+            exit()
 
     def first_loop(self):
         while True:
@@ -142,7 +138,7 @@ class Client:
             print("Available commands:")
             print("1. Send a message")
             print("2. List accounts")
-            print("3. Delete an account")
+            print("3. Delete an account (and logout)")
             print("4. Logout")
             choice = input("Enter a command number (1-4): ")
 
@@ -162,4 +158,6 @@ class Client:
 
 if __name__ == '__main__':
     host = input("Enter host ip address: ")
+    if not host:
+        host = 'localhost'
     Client(host)
