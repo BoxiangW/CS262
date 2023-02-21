@@ -34,4 +34,6 @@
 *.pyc
 
 # pycache
-./scratch/__pycache__
+scratch/__pycache__
+hw1/gRPC/__pycache__/chat_pb2_grpc.cpython-39.pyc
+hw1/gRPC/__pycache__/chat_pb2.cpython-39.pyc
