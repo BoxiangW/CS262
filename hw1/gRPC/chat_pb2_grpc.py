@@ -14,29 +14,84 @@ class ChatServerStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.ChatStream = channel.unary_stream(
-                '/grpc.ChatServer/ChatStream',
-                request_serializer=chat__pb2.Empty.SerializeToString,
-                response_deserializer=chat__pb2.Message.FromString,
-                )
         self.SendMessage = channel.unary_unary(
                 '/grpc.ChatServer/SendMessage',
                 request_serializer=chat__pb2.Message.SerializeToString,
-                response_deserializer=chat__pb2.Empty.FromString,
+                response_deserializer=chat__pb2.Reply.FromString,
+                )
+        self.ChatStream = channel.unary_stream(
+                '/grpc.ChatServer/ChatStream',
+                request_serializer=chat__pb2.Id.SerializeToString,
+                response_deserializer=chat__pb2.Message.FromString,
+                )
+        self.SendListAccounts = channel.unary_unary(
+                '/grpc.ChatServer/SendListAccounts',
+                request_serializer=chat__pb2.ListAccounts.SerializeToString,
+                response_deserializer=chat__pb2.Reply.FromString,
+                )
+        self.SendCreateAccount = channel.unary_unary(
+                '/grpc.ChatServer/SendCreateAccount',
+                request_serializer=chat__pb2.CreateAccount.SerializeToString,
+                response_deserializer=chat__pb2.Reply.FromString,
+                )
+        self.SendReceiveMessages = channel.unary_unary(
+                '/grpc.ChatServer/SendReceiveMessages',
+                request_serializer=chat__pb2.ReceiveMessages.SerializeToString,
+                response_deserializer=chat__pb2.Reply.FromString,
+                )
+        self.SendDeleteAccount = channel.unary_unary(
+                '/grpc.ChatServer/SendDeleteAccount',
+                request_serializer=chat__pb2.DeleteAccount.SerializeToString,
+                response_deserializer=chat__pb2.Reply.FromString,
+                )
+        self.SendClose = channel.unary_unary(
+                '/grpc.ChatServer/SendClose',
+                request_serializer=chat__pb2.Close.SerializeToString,
+                response_deserializer=chat__pb2.Reply.FromString,
                 )
 
 
 class ChatServerServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def ChatStream(self, request, context):
+    def SendMessage(self, request, context):
         """This bi-directional stream makes it possible to send and receive Messages between 2 persons
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def SendMessage(self, request, context):
+    def ChatStream(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SendListAccounts(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SendCreateAccount(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SendReceiveMessages(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SendDeleteAccount(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SendClose(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -45,15 +100,40 @@ class ChatServerServicer(object):
 
 def add_ChatServerServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'ChatStream': grpc.unary_stream_rpc_method_handler(
-                    servicer.ChatStream,
-                    request_deserializer=chat__pb2.Empty.FromString,
-                    response_serializer=chat__pb2.Message.SerializeToString,
-            ),
             'SendMessage': grpc.unary_unary_rpc_method_handler(
                     servicer.SendMessage,
                     request_deserializer=chat__pb2.Message.FromString,
-                    response_serializer=chat__pb2.Empty.SerializeToString,
+                    response_serializer=chat__pb2.Reply.SerializeToString,
+            ),
+            'ChatStream': grpc.unary_stream_rpc_method_handler(
+                    servicer.ChatStream,
+                    request_deserializer=chat__pb2.Id.FromString,
+                    response_serializer=chat__pb2.Message.SerializeToString,
+            ),
+            'SendListAccounts': grpc.unary_unary_rpc_method_handler(
+                    servicer.SendListAccounts,
+                    request_deserializer=chat__pb2.ListAccounts.FromString,
+                    response_serializer=chat__pb2.Reply.SerializeToString,
+            ),
+            'SendCreateAccount': grpc.unary_unary_rpc_method_handler(
+                    servicer.SendCreateAccount,
+                    request_deserializer=chat__pb2.CreateAccount.FromString,
+                    response_serializer=chat__pb2.Reply.SerializeToString,
+            ),
+            'SendReceiveMessages': grpc.unary_unary_rpc_method_handler(
+                    servicer.SendReceiveMessages,
+                    request_deserializer=chat__pb2.ReceiveMessages.FromString,
+                    response_serializer=chat__pb2.Reply.SerializeToString,
+            ),
+            'SendDeleteAccount': grpc.unary_unary_rpc_method_handler(
+                    servicer.SendDeleteAccount,
+                    request_deserializer=chat__pb2.DeleteAccount.FromString,
+                    response_serializer=chat__pb2.Reply.SerializeToString,
+            ),
+            'SendClose': grpc.unary_unary_rpc_method_handler(
+                    servicer.SendClose,
+                    request_deserializer=chat__pb2.Close.FromString,
+                    response_serializer=chat__pb2.Reply.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -64,23 +144,6 @@ def add_ChatServerServicer_to_server(servicer, server):
  # This class is part of an EXPERIMENTAL API.
 class ChatServer(object):
     """Missing associated documentation comment in .proto file."""
-
-    @staticmethod
-    def ChatStream(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_stream(request, target, '/grpc.ChatServer/ChatStream',
-            chat__pb2.Empty.SerializeToString,
-            chat__pb2.Message.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def SendMessage(request,
@@ -95,6 +158,108 @@ class ChatServer(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/grpc.ChatServer/SendMessage',
             chat__pb2.Message.SerializeToString,
-            chat__pb2.Empty.FromString,
+            chat__pb2.Reply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ChatStream(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/grpc.ChatServer/ChatStream',
+            chat__pb2.Id.SerializeToString,
+            chat__pb2.Message.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SendListAccounts(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/grpc.ChatServer/SendListAccounts',
+            chat__pb2.ListAccounts.SerializeToString,
+            chat__pb2.Reply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SendCreateAccount(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/grpc.ChatServer/SendCreateAccount',
+            chat__pb2.CreateAccount.SerializeToString,
+            chat__pb2.Reply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SendReceiveMessages(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/grpc.ChatServer/SendReceiveMessages',
+            chat__pb2.ReceiveMessages.SerializeToString,
+            chat__pb2.Reply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SendDeleteAccount(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/grpc.ChatServer/SendDeleteAccount',
+            chat__pb2.DeleteAccount.SerializeToString,
+            chat__pb2.Reply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SendClose(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/grpc.ChatServer/SendClose',
+            chat__pb2.Close.SerializeToString,
+            chat__pb2.Reply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
