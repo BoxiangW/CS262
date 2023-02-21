@@ -29,6 +29,7 @@ class ChatServer(rpc.ChatServerServicer):
             # Check if there are any new messages
             if self.accounts[request.username][0]:
                 while len(self.accounts[request.username][1]) > 0:
+                    time.sleep(1)
                     n = self.accounts[request.username][1].pop(0)
                     yield n
 
@@ -62,7 +63,7 @@ class ChatServer(rpc.ChatServerServicer):
         n = chat.Reply()
         n.message = matching_accounts
         n.error = False
-        print(matching_accounts)
+        print("[List] {}: {}".format(request.wildcard, matching_accounts))
         return n
 
     def SendCreateAccount(self, request: chat.CreateAccount, context):

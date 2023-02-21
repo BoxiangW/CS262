@@ -24,7 +24,7 @@ class Client:
         n.username = self.username
         self.stream = self.conn.ChatStream(n)
         for note in self.stream:
-            time.sleep(1)
+            time.sleep(0.1)
             print("\n[Receive]{}: {}".format(note.username, note.message))
 
     def send_message(self):
