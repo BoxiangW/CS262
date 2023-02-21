@@ -21,7 +21,7 @@ message CreateAccount {
     string username = 1;
 }
 
-message ReceiveMessages {
+message DeliverMessages {
     string username = 1;
 }
 
@@ -48,7 +48,7 @@ service ChatServer {
     rpc ChatStream (Id) returns (stream Message);
     rpc SendListAccounts (ListAccounts) returns (Reply);
     rpc SendCreateAccount (CreateAccount) returns (Reply);
-    rpc SendReceiveMessages (ReceiveMessages) returns (Reply);
+    rpc SendDeliverMessages (DeliverMessages) returns (Reply);
     rpc SendDeleteAccount (DeleteAccount) returns (Reply);
     rpc SendLogin (Login) returns (Reply);
     rpc SendLogout (Logout) returns (Reply);

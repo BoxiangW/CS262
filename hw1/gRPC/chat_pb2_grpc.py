@@ -34,9 +34,9 @@ class ChatServerStub(object):
                 request_serializer=chat__pb2.CreateAccount.SerializeToString,
                 response_deserializer=chat__pb2.Reply.FromString,
                 )
-        self.SendReceiveMessages = channel.unary_unary(
-                '/grpc.ChatServer/SendReceiveMessages',
-                request_serializer=chat__pb2.ReceiveMessages.SerializeToString,
+        self.SendDeliverMessages = channel.unary_unary(
+                '/grpc.ChatServer/SendDeliverMessages',
+                request_serializer=chat__pb2.DeliverMessages.SerializeToString,
                 response_deserializer=chat__pb2.Reply.FromString,
                 )
         self.SendDeleteAccount = channel.unary_unary(
@@ -84,7 +84,7 @@ class ChatServerServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def SendReceiveMessages(self, request, context):
+    def SendDeliverMessages(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -131,9 +131,9 @@ def add_ChatServerServicer_to_server(servicer, server):
                     request_deserializer=chat__pb2.CreateAccount.FromString,
                     response_serializer=chat__pb2.Reply.SerializeToString,
             ),
-            'SendReceiveMessages': grpc.unary_unary_rpc_method_handler(
-                    servicer.SendReceiveMessages,
-                    request_deserializer=chat__pb2.ReceiveMessages.FromString,
+            'SendDeliverMessages': grpc.unary_unary_rpc_method_handler(
+                    servicer.SendDeliverMessages,
+                    request_deserializer=chat__pb2.DeliverMessages.FromString,
                     response_serializer=chat__pb2.Reply.SerializeToString,
             ),
             'SendDeleteAccount': grpc.unary_unary_rpc_method_handler(
@@ -230,7 +230,7 @@ class ChatServer(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def SendReceiveMessages(request,
+    def SendDeliverMessages(request,
             target,
             options=(),
             channel_credentials=None,
@@ -240,8 +240,8 @@ class ChatServer(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/grpc.ChatServer/SendReceiveMessages',
-            chat__pb2.ReceiveMessages.SerializeToString,
+        return grpc.experimental.unary_unary(request, target, '/grpc.ChatServer/SendDeliverMessages',
+            chat__pb2.DeliverMessages.SerializeToString,
             chat__pb2.Reply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

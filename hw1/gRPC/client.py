@@ -46,6 +46,15 @@ class Client:
             else:
                 print("[Send]: {}".format(reply.message))
 
+    def deliver_message(self):
+        n = chat.DeliverMessages()
+        n.username = self.username
+        reply = self.conn.SendDeliverMessages(n)
+        if reply.error:
+            print("[Error]: {}".format(reply.message))
+        else:
+            print("[Deliver]: {}".format(reply.message))
+
     def list_accounts(self):
         wildcard = input("Enter a wildcard (optional): ")
         if not wildcard:
@@ -70,7 +79,7 @@ class Client:
             if reply.error:
                 print("[Error]: {}".format(reply.message))
             else:
-                print(reply.message)
+                print("[Create]: {}".format(reply.message))
                 self.username = username
                 # create new listening thread for when new message streams come in
                 self.listener = threading.Thread(target=self._start_stream,
@@ -137,19 +146,22 @@ class Client:
         while True:
             print("Available commands:")
             print("1. Send a message")
-            print("2. List accounts")
-            print("3. Delete an account (and logout)")
-            print("4. Logout")
-            choice = input("Enter a command number (1-4): ")
+            print("2. Deliver undelivered message")
+            print("3. List accounts")
+            print("4. Delete an account (and logout)")
+            print("5. Logout")
+            choice = input("Enter a command number (1-5): ")
 
             if choice == "1":
                 self.send_message()
             elif choice == "2":
-                self.list_accounts()
+                self.deliver_message()
             elif choice == "3":
+                self.list_accounts()
+            elif choice == "4":
                 self.delete_account()
                 break
-            elif choice == "4":
+            elif choice == "5":
                 self.logout()
                 break
             else:

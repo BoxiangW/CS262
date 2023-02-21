@@ -19,16 +19,18 @@ class ChatServer(rpc.ChatServerServicer):
         # List with all the chat history
         self.chats = []
         # List with all the accounts
-        self.accounts = {}
+        self.accounts = {}  # {username: [status, [chat.Message]]}
+        self.logout_accounts = {}  # {username: [chat.Message]}
 
     # The stream which will be used to send new messages to clients
     def ChatStream(self, request, context):
         # For every client a infinite loop starts (in gRPC's own managed thread)
         while True:
             # Check if there are any new messages
-            while len(self.accounts[request.username]) > 0:
-                n = self.accounts[request.username].pop(0)
-                yield n
+            if self.accounts[request.username][0]:
+                while len(self.accounts[request.username][1]) > 0:
+                    n = self.accounts[request.username][1].pop(0)
+                    yield n
 
     def SendMessage(self, request: chat.Message, context):
         # this is only for the server console
@@ -42,7 +44,10 @@ class ChatServer(rpc.ChatServerServicer):
             return n
         else:
             self.chats.append(request)
-            self.accounts[request.to].append(request)
+            if self.accounts[request.to][0]:
+                self.accounts[request.to][1].append(request)
+            else:
+                self.logout_accounts[request.to].append(request)
             n = chat.Reply()
             n.message = "Message sent"
             n.error = False
@@ -69,16 +74,33 @@ class ChatServer(rpc.ChatServerServicer):
             n.error = True
             return n
         else:
-            self.accounts[request.username] = []
+            self.accounts[request.username] = [True, []]
             n = chat.Reply()
             n.message = "Account created"
             n.error = False
             return n
 
+    def SendDeliverMessages(self, request, context):
+        print("[Deliver] {}".format(request.username))
+        try:
+            self.logout_accounts[request.username]
+        except:
+            n = chat.Reply()
+            n.message = "No messages to deliver"
+            n.error = True
+            return n
+        self.accounts[request.username][1] += self.logout_accounts[request.username]
+        del self.logout_accounts[request.username]
+        n = chat.Reply()
+        n.message = "Messages delivered"
+        n.error = False
+        return n
+
     def SendDeleteAccount(self, request: chat.DeleteAccount, context):
         # this is only for the server console
         print("[Delete] {}".format(request.username))
         del self.accounts[request.username]
+        del self.logout_accounts[request.username]
         n = chat.Reply()
         n.message = "Account deleted"
         n.error = False
@@ -87,6 +109,7 @@ class ChatServer(rpc.ChatServerServicer):
     def SendLogin(self, request: chat.Login, context):
         # this is only for the server console
         if request.username in self.accounts:
+            self.accounts[request.username][0] = True
             print("[Login] {}".format(request.username))
             n = chat.Reply()
             n.message = "Login successful"
@@ -101,6 +124,8 @@ class ChatServer(rpc.ChatServerServicer):
 
     def SendLogout(self, request: chat.Logout, context):
         # this is only for the server console
+        self.accounts[request.username][0] = False
+        self.logout_accounts[request.username] = []
         print("[Logout] {}".format(request.username))
         n = chat.Reply()
         n.message = "Logout successful"
