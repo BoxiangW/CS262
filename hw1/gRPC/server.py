@@ -51,10 +51,13 @@ class ChatServer(rpc.ChatServerServicer):
     def SendListAccounts(self, request: chat.ListAccounts, context):
         # this is only for the server console
         print("[List] {}: {}".format(request.username, request.wildcard))
-        matching_accounts = fnmatch.filter(self.accounts, request.wildcard)
+        matching_accounts = fnmatch.filter(
+            list(self.accounts.keys()), request.wildcard)
+        matching_accounts = ",".join(matching_accounts)
         n = chat.Reply()
         n.message = matching_accounts
         n.error = False
+        print(matching_accounts)
         return n
 
     def SendCreateAccount(self, request: chat.CreateAccount, context):
@@ -75,17 +78,32 @@ class ChatServer(rpc.ChatServerServicer):
     def SendDeleteAccount(self, request: chat.DeleteAccount, context):
         # this is only for the server console
         print("[Delete] {}".format(request.username))
-        self.accounts.remove(request.username)
+        del self.accounts[request.username]
         n = chat.Reply()
         n.message = "Account deleted"
         n.error = False
         return n
 
-    def SendClose(self, request: chat.Close, context):
+    def SendLogin(self, request: chat.Login, context):
         # this is only for the server console
-        print("[Close] {}".format(request.username))
+        if request.username in self.accounts:
+            print("[Login] {}".format(request.username))
+            n = chat.Reply()
+            n.message = "Login successful"
+            n.error = False
+            return n
+        else:
+            self.accounts[request.username] = []
+            n = chat.Reply()
+            n.message = "Username not found"
+            n.error = True
+            return n
+
+    def SendLogout(self, request: chat.Logout, context):
+        # this is only for the server console
+        print("[Logout] {}".format(request.username))
         n = chat.Reply()
-        n.message = "Account closed"
+        n.message = "Logout successful"
         n.error = False
         return n
 
