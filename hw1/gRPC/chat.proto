@@ -29,7 +29,11 @@ message DeleteAccount {
     string username = 1;
 }
 
-message Close {
+message Login {
+    string username = 1;
+}
+
+message Logout {
     string username = 1;
 }
 
@@ -46,5 +50,6 @@ service ChatServer {
     rpc SendCreateAccount (CreateAccount) returns (Reply);
     rpc SendReceiveMessages (ReceiveMessages) returns (Reply);
     rpc SendDeleteAccount (DeleteAccount) returns (Reply);
-    rpc SendClose (Close) returns (Reply);
+    rpc SendLogin (Login) returns (Reply);
+    rpc SendLogout (Logout) returns (Reply);
 }

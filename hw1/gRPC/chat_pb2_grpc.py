@@ -44,9 +44,14 @@ class ChatServerStub(object):
                 request_serializer=chat__pb2.DeleteAccount.SerializeToString,
                 response_deserializer=chat__pb2.Reply.FromString,
                 )
-        self.SendClose = channel.unary_unary(
-                '/grpc.ChatServer/SendClose',
-                request_serializer=chat__pb2.Close.SerializeToString,
+        self.SendLogin = channel.unary_unary(
+                '/grpc.ChatServer/SendLogin',
+                request_serializer=chat__pb2.Login.SerializeToString,
+                response_deserializer=chat__pb2.Reply.FromString,
+                )
+        self.SendLogout = channel.unary_unary(
+                '/grpc.ChatServer/SendLogout',
+                request_serializer=chat__pb2.Logout.SerializeToString,
                 response_deserializer=chat__pb2.Reply.FromString,
                 )
 
@@ -91,7 +96,13 @@ class ChatServerServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def SendClose(self, request, context):
+    def SendLogin(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SendLogout(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -130,9 +141,14 @@ def add_ChatServerServicer_to_server(servicer, server):
                     request_deserializer=chat__pb2.DeleteAccount.FromString,
                     response_serializer=chat__pb2.Reply.SerializeToString,
             ),
-            'SendClose': grpc.unary_unary_rpc_method_handler(
-                    servicer.SendClose,
-                    request_deserializer=chat__pb2.Close.FromString,
+            'SendLogin': grpc.unary_unary_rpc_method_handler(
+                    servicer.SendLogin,
+                    request_deserializer=chat__pb2.Login.FromString,
+                    response_serializer=chat__pb2.Reply.SerializeToString,
+            ),
+            'SendLogout': grpc.unary_unary_rpc_method_handler(
+                    servicer.SendLogout,
+                    request_deserializer=chat__pb2.Logout.FromString,
                     response_serializer=chat__pb2.Reply.SerializeToString,
             ),
     }
@@ -248,7 +264,7 @@ class ChatServer(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def SendClose(request,
+    def SendLogin(request,
             target,
             options=(),
             channel_credentials=None,
@@ -258,8 +274,25 @@ class ChatServer(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/grpc.ChatServer/SendClose',
-            chat__pb2.Close.SerializeToString,
+        return grpc.experimental.unary_unary(request, target, '/grpc.ChatServer/SendLogin',
+            chat__pb2.Login.SerializeToString,
+            chat__pb2.Reply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SendLogout(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/grpc.ChatServer/SendLogout',
+            chat__pb2.Logout.SerializeToString,
             chat__pb2.Reply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
