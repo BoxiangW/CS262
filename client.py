@@ -3,6 +3,7 @@ import json
 import threading
 import time
 import sys
+import os
 
 # a function for printing to stderr
 def eprint(*args, **kwargs):
@@ -26,6 +27,12 @@ class ChatClient:
         self.sock.connect((server_host, server_port))
         self.username = None
 
+    def login(self, username, password):
+        if self.username is None:
+            self.sock.sendall(create_msg("login", username, body=password))
+        else:
+            eprint("You already logged in")
+
     def send_message(self, recipient, message):
         if not self.username:
             eprint("Please create your username first")
@@ -35,8 +42,8 @@ class ChatClient:
     def list_accounts(self, wildcard):
         self.sock.sendall(create_msg("list", self.username, body=wildcard))
 
-    def create_account(self, username):
-        self.sock.sendall(create_msg("create", username))
+    def create_account(self, username, password):
+        self.sock.sendall(create_msg("create", username, body=password))
 
     def delete_account(self):
         self.sock.sendall(create_msg("delete", self.username))
@@ -61,6 +68,7 @@ def handle_user():
     while True:
         # Print the available commands
         print("Available commands:")
+        print("0. Login")
         print("1. Send a message")
         print("2. List accounts")
         print("3. Create an account")
@@ -68,24 +76,29 @@ def handle_user():
         print("5. Exit")
 
         # Prompt the user for input
-        choice = input("Enter a command number (1-6): ")
+        choice = input("Enter a command number (0-5): ")
 
         # Call the appropriate client function based on the user input
-        if choice == "1":
+        if choice == "0":
+            username = input("Enter your username: ")
+            password = input("Enter your password: ")
+            client.login(username, password)
+        elif choice == "1":
             recipient = input("Enter the recipient's username: ")
             message = input("Enter the message: ")
             client.send_message(recipient, message)
         elif choice == "2":
-            username = input("Enter a username (optional): ")
+            username = input("Enter a matching wildcard (optional): ")
             client.list_accounts(username)
         elif choice == "3":
             username = input("Enter the username to create: ")
-            client.create_account(username)
+            password = input("Enter a password: ")
+            client.create_account(username, password)
         elif choice == "4":
             client.delete_account()
         elif choice == "5":
             client.close()
-            break
+            os._exit(1)
         else:
             print("Invalid command. Please try again.")
 
@@ -96,14 +109,19 @@ def handle_message():
             break
         msg = json.loads(msg)
 
-        if msg["cmd"] == "deliver":
+        if msg["cmd"] == "login":
+            if msg["error"]:
+                print("Failed to login: {}. Please try again.".format(msg["body"]))
+            else:
+                print("Logged in successfully.")
+                client.username = msg["to"]
+        elif msg["cmd"] == "deliver":
             print("{} sent: {}".format(msg["from"], msg["body"]))
         elif msg["cmd"] == "create":
             if msg["error"]:
                 print("Failed to create account: {}. Please try again.".format(msg["body"]))
             else:
                 print("Account created successfully.")
-                client.username = msg["to"]
         elif msg["cmd"] == "delete":
             if msg["error"]:
                 print("Failed to delete account: {}. Please try again.".format(msg["body"]))

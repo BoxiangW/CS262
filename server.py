@@ -12,6 +12,7 @@ MSGLEN = 4096
 
 # create a dictionary to store user accounts and their undelivered messages
 users = {}
+user_info = {}
 
 # json encoded message: {"cmd": ..., "from": .., "to": ..., "body": ..., "err": ...}
 
@@ -57,13 +58,22 @@ def handle_client(conn, addr):
         cmd = parts["cmd"]
         username = parts["from"]
 
+        # handle log in command
+        if cmd == "login":
+            if (username not in user_info) or (user_info[username] != parts["body"]):
+                conn.send(create_msg(cmd, body="Username/Password error", err=True))
+            else:
+                conn.send(create_msg(cmd, body="Login successful", to=username))
+
         # handle create account command
-        if cmd == "create":
+        elif cmd == "create":
             # check if username already exists
-            if username in users:
+            if username in user_info:
                 conn.send(create_msg(cmd, body="Username already exists", err=True))
             else:
                 # create new user account
+                user_info[username] = parts["body"]
+                # create the message queue
                 users[username] = []
                 conn.send(create_msg(cmd, body="Account created", to=username))
 
@@ -106,14 +116,15 @@ def handle_client(conn, addr):
         elif cmd == "delete":
             # check if user has undelivered messages
             if username not in users:
-                conn.send(create_msg("error", body="User does not exist"))
+                conn.send(create_msg(cmd, body="User does not exist", err=True))
             elif username in users and len(users[username]) > 0:
-                conn.send(create_msg("error", body="Undelivered messages exist"))
+                conn.send(create_msg(cmd, body="Undelivered messages exist", err=True))
             else:
                 # delete user account
                 del users[username]
+                del user_info[username]
                 # notify client that account was deleted
-                conn.send(create_msg("success", body="Account deleted"))
+                conn.send(create_msg(cmd, body="Account deleted"))
                 # disconnect client
                 # conn.send(create_msg("error", body="disconnect"))
         elif cmd == "close":
