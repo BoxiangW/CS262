@@ -18,7 +18,7 @@ import threading
 
 class ChatServer:
     # define the maximum message size
-    MSGLEN = 4096
+    MSGLEN = 409600
 
     # json encoded message: {"cmd": ..., "from": .., "to": ..., "body": ..., "err": ...}
 
@@ -37,7 +37,7 @@ class ChatServer:
     def receive(self, conn):
         return conn.recv(ChatServer.MSGLEN)
 
-    def __init__(self, host='localhost', port=56789):
+    def __init__(self, host='10.250.236.33', port=56789):
         self.host = host
         self.port = port
         self.users = {}

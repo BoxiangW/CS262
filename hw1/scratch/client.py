@@ -5,6 +5,8 @@ import time
 import sys
 import os
 
+import datetime
+
 # a function for printing to stderr
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
@@ -112,6 +114,7 @@ def handle_user():
             if choice == "0":
                 recipient = input("Enter the recipient's username: ")
                 message = input("Enter the message: ")
+                print(datetime.datetime.now())
                 client.send_message(recipient, message)
             elif choice == "1":
                 username = input("Enter a matching wildcard (optional): ")
@@ -154,6 +157,7 @@ def handle_message():
         elif msg["cmd"] == "list":
             print(json.dumps(msg["body"], indent=2))
         elif msg["cmd"] == "send":
+            print(datetime.datetime.now())
             if msg["error"]:
                 print("Failed to send message: {}. Please try again.".format(msg["body"]))
             else:
@@ -167,7 +171,6 @@ def request_deliver():
             time.sleep(5.0)
 
 
-if __name__ == '__main__':
-    threading.Thread(target=handle_user).start()
-    threading.Thread(target=handle_message).start()
-    threading.Thread(target=request_deliver).start()
+threading.Thread(target=handle_user).start()
+threading.Thread(target=handle_message).start()
+threading.Thread(target=request_deliver).start()
