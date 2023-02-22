@@ -44,6 +44,8 @@ Once the connection is established, you can follow the prompts to create a new a
 
 To run unit testing for the custom version, run `python -m unittest test_client.py` for client, and run `python test_server.py` for server.
 
+To run unit testing for gRPC version, under `/gRPC`, run `pytest —capture=sys`
+
 ### Functions
 
 Login: Log in to the chat app with a username.
