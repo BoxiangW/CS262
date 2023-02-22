@@ -7,10 +7,7 @@ import fnmatch
 import chat_pb2 as chat
 import chat_pb2_grpc as rpc
 
-HOST = 'localhost'
 PORT = 56789
-
-# inheriting here from the protobuf rpc file which is generated
 
 
 class ChatServer(rpc.ChatServerServicer):
@@ -29,7 +26,6 @@ class ChatServer(rpc.ChatServerServicer):
             # Check if there are any new messages
             if self.accounts[request.username][0]:
                 while len(self.accounts[request.username][1]) > 0:
-                    time.sleep(1)
                     n = self.accounts[request.username][1].pop(0)
                     yield n
 
@@ -100,33 +96,40 @@ class ChatServer(rpc.ChatServerServicer):
 
     def SendDeleteAccount(self, request: chat.DeleteAccount, context):
         # this is only for the server console
-        print("[Delete] {}".format(request.username))
-        if len(self.logout_accounts[request.username]) > 0:
-            n = chat.Reply()
-            n.message = "You have messages to deliver"
-            n.error = True
-            return n
-        else:
+        try:
+            self.logout_accounts[request.username]
+        except:
             del self.accounts[request.username]
-            del self.logout_accounts[request.username]
+            print("[Delete] {}".format(request.username))
             n = chat.Reply()
             n.message = "Account deleted"
             n.error = False
             return n
+        else:
+            if len(self.logout_accounts[request.username]) > 0:
+                n = chat.Reply()
+                n.message = "You have messages to deliver"
+                n.error = True
+                return n
 
     def SendLogin(self, request: chat.Login, context):
         # this is only for the server console
-        if request.username in self.accounts:
+        if request.username not in self.accounts:
+            n = chat.Reply()
+            n.message = "Username not found"
+            n.error = True
+            return n
+        elif self.accounts[request.username][0] == True:
+            n = chat.Reply()
+            n.message = "Already logged in"
+            n.error = True
+            return n
+        else:
             self.accounts[request.username][0] = True
             print("[Login] {}".format(request.username))
             n = chat.Reply()
             n.message = "Login successful"
             n.error = False
-            return n
-        else:
-            n = chat.Reply()
-            n.message = "Username not found"
-            n.error = True
             return n
 
     def SendLogout(self, request: chat.Logout, context):

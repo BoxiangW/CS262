@@ -1,5 +1,5 @@
 
-## Engineering Notebook:
+# Engineering Notebook
 
 **Custom wire protocols**:
 
