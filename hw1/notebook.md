@@ -40,6 +40,10 @@ For every message between client and server, we format it this way:
 5.  List: list all accounts matching the wildcard given.
     
 6.  Close: telling the server a client closed their connection.
+
+7.  Login: log in a specific user
+
+8.  Logoff: telling the server a client has logged off, therefore we should remove it from active_users.
     
 
 This format is consistent whether it is from user to client, or the other way around.
@@ -60,25 +64,24 @@ Note that every message between client to server follows this exact same format,
 
 **Account Creation/Deletion:**
 
-We use a dictionary to store the account info, mapping username to password.
+We use a dictionary to store undelivered messages, mapping username to a message queue.
 
-We use another dictionary to store undelivered messages, mapping username to a message queue.
+We use another dictionary to store active users and their connection, so that we can quickly identify whether a message recipient is logged-in and send them their message.
 
 We choose this because dictionary gives us a constant lookup time, allowing us to quickly check whether a user exist, which is crucial for message delivery error checking and account creation/deletion.
 
-  
 
 At first we only have 1 dictionary, which maps username to a message queue. Which we thought is enough for account creation/deletion (check for dictionary keys) and sending messages. However we quickly realized that user cannot log in again after quitting, therefore we need some kind of authentication and a log in system.
+
+We also didn't track the user's logged-in status initially, but we soon realized that we are unable to track which user is active before sending them the message.
 
   
 
 **Message Sending**:
 
-Every message send from one user to another, is stored in the receiving user’s message queue automatically. Only when that user request delivering using the “deliver” command, the server will then release all unsend message in the queue to user. This satisfy the requirement that all message is delivered upon request.
+There are two ways messages are being delivered. For a recipient who is logged in, we directly send the message to them.
 
-  
-
-To achieve the requirement that “message are sent to logged-in users automatically, and store in the message queue for offline users”, on the client side, we have a function that call the deliver function every second. By doing this, users that are logged in can automatically receive new messages, while offline user won’t be able to call this function therefore all undelivered messages are stored in their message queue, We also ensure that there’s only one way to receive message which avoids any confusion that may arise.
+For a recipient who is logged off, we store the message in their corresponding message queue. Only when that user request delivering using the “deliver” command, the server will then release all unsend message in the queue to user. This satisfy the requirement that all undelivered message is delivered upon request.
 
   
 

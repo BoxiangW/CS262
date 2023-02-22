@@ -20,8 +20,6 @@ class ChatServer:
     # define the maximum message size
     MSGLEN = 409600
 
-    # json encoded message: {"cmd": ..., "from": .., "to": ..., "body": ..., "err": ...}
-
     # a message generator function
     def create_msg(self, cmd, src="", to="", body="", err=False):
         msg = {
@@ -37,12 +35,11 @@ class ChatServer:
     def receive(self, conn):
         return conn.recv(ChatServer.MSGLEN)
 
-    def __init__(self, host='10.250.236.33', port=56789):
-        self.host = host
+    def __init__(self, host='localhost' , port=56799):
+        self.host = socket.gethostbyname(socket.gethostname())
         self.port = port
         self.users = {}
-        self.user_info = {}
-        self.active_users = set([])
+        self.active_users = {}
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind((host, port))
     
@@ -77,10 +74,14 @@ class ChatServer:
 
             # handle log in command
             if cmd == "login":
-                if (username not in self.user_info) or (self.user_info[username] != parts["body"]):
+                if (username not in self.users):
                     conn.send(self.create_msg(
                         cmd, body="Username/Password error", err=True))
+                elif (username in self.active_users):
+                    conn.send(self.create_msg(
+                        cmd, body="Already logged in elsewhere", err=True))
                 else:
+                    self.active_users[username] = conn
                     conn.send(self.create_msg(cmd, body="Login successful", to=username))
 
             # handle create account command
@@ -90,8 +91,6 @@ class ChatServer:
                     conn.send(self.create_msg(
                         cmd, body="Username already exists", err=True))
                 else:
-                    # create new user account
-                    self.user_info[username] = parts["body"]
                     # create the message queue
                     self.users[username] = []
                     conn.send(self.create_msg(cmd, body="Account created", to=username))
@@ -112,6 +111,9 @@ class ChatServer:
                 # check if recipient is a registered user
                 if recipient not in self.users:
                     conn.send(self.create_msg(cmd, body="Recipient not found", err=True))
+                elif recipient in self.active_users:
+                    self.active_users[recipient].send(self.create_msg("deliver", src=username, body=message))
+                    conn.send(self.create_msg(cmd, body="Message sent"))
                 else:
                     # add message to recipient's message queue
                     self.users[recipient].append((username, message))
@@ -142,7 +144,7 @@ class ChatServer:
                 else:
                     # delete user account
                     del self.users[username]
-                    del self.user_info[username]
+                    del self.active_users[username]
                     # notify client that account was deleted
                     conn.send(self.create_msg(cmd, body="Account deleted"))
                     # disconnect client
@@ -150,6 +152,9 @@ class ChatServer:
             elif cmd == "close":
                 print(f"[DISCONNECT] {addr} disconnected.")
                 break
+            elif cmd == "logoff":
+                del self.active_users[username]
+                conn.send(self.create_msg(cmd, body="User logged off"))
 
         conn.close()
         
