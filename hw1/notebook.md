@@ -1,7 +1,7 @@
 
 # Engineering Notebook
 
-**Custom wire protocols**:
+## Custom wire protocols:
 
 At the initial stage, we are thinking of using simply a string to encode everything, but we quickly realized that it’s very hard to format it so that we can encoder/decode it easily. For example, if there’s a message from user A to user B containing the body “Hello”, and we format it in string format as “A|B|Hello”, then we can decode it using the “|” as the split separator, however if the message body also include |, then the separator will not work.
 
@@ -93,4 +93,39 @@ The single server binds to an address and port, and listen for any incoming conn
 
 **Client Setup:**
 
-The client has three threads, 1 thread acts as the user interface that prompt user for actions, and send requests according to user’s input. Another thread is in charge of receiving the messages, in an infinite loop, it will wait for messages and print them accordingly based on the message content. The last thread is in charge of sending automatic requests to the server to deliver unsent messages, every second. By doing this we separates input/output or send/receive to different threads, avoiding any confusion
+The client has three threads, 1 thread acts as the user interface that prompt user for actions, and send requests according to user’s input. Another thread is in charge of receiving the messages, in an infinite loop, it will wait for messages and print them accordingly based on the message content. The last thread is in charge of sending automatic requests to the server to deliver unsent messages, every second. By doing this we separates input/output or send/receive to different threads, avoiding any confusion.
+
+
+## gRPC version:
+
+We use gRPC to implement the chat room server as well. Both server part and client part are implemented in Python. The server and client communicate with each other using gRPC. The server is implemented in the file server.py, and the client is implemented in the file client.py. Protobuf is used to define the message format.
+
+**Procedure for user**:
+
+1. Start the server by running the command `python server.py`
+2. Start the client by running the command `python client.py`
+3. Client part will ask for server address which is `localhost` by default, we set the port to be 56789.
+4. User enter a loop with 3 options: create account, login, or quit.
+    - Create account: user enter a username, client will check its not empty, and the server will create an account with that username. If the username already exists, the server will return an error message.
+    - Login: user enter a username, client will check its not empty, and the server will check if the username exists. If the username does not exist, the server will return an error message. If the username is already logged in, the server will return an error message. Else the server will return a success message and the user enter a second loop.
+    - quit: user quit the program.
+5. In the second loop, user have 5 options: send message, deliver undelivered message, list accounts, delete account, or logout.
+    - Send message: user enter a username and a message, client side will check they are not empty, and the server side will check if the username exists. If the username does not exist, the server will return an error message. Else the server will return a success message and send the message to the user or store the message for users not online.
+    - Deliver undelivered message: the server will send all undelivered message to the user.
+    - List accounts: user enter an optional wildcard, and the server will return a list of accounts matching the wildcard.
+    - Delete account: the server will check if the user has undelivered messages. If there is undelivered messages, the server will return an error message. Else the server will return a success message and delete the account quit the program.
+    - logout: the server will return a success message and quit the program.
+
+
+**Server side implementation**:
+
+Use a dict to store the username, online status and the corresponding message queue. The key is the username, and the value is the status and the message queue. `accounts = {username: [status, message queue]}` Message queue is a list of messages in the type of gRPC. The status is a boolean value, True means the user is online, False means the user is offline.
+
+With response-streaming gRPC, serer will continue pop the message queue and send the message to the user until the queue is empty. If the user is offline, the server will use another dict to store undelivered message. After the delivery option, the server will push the undelivered message queue to dict `account` and thus receive them.
+
+
+## Comparison:
+
+Advantages of gRPC:
+- Easy to use, we can use different languages for client and server.
+- `.proto` file is easy to understand and modify.

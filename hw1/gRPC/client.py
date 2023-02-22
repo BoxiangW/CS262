@@ -1,5 +1,4 @@
 import threading
-import time
 
 import grpc
 
@@ -22,10 +21,8 @@ class Client:
         # this line will wait for new messages from the server!
         n = chat.Id()
         n.username = self.username
-        self.stream = self.conn.ChatStream(n)
-        for note in self.stream:
+        for note in self.conn.ChatStream(n):
             print("\n[Receive]{}: {}".format(note.username, note.message))
-            print(time.time())
 
     def send_message(self):
         recipient = input("Enter the recipient's username: ")
@@ -40,7 +37,6 @@ class Client:
             n.username = self.username
             n.to = recipient
             n.message = message
-            print(time.time())
             reply = self.conn.SendMessage(n)  # send the Message to the server
             if reply.error:
                 print("[Error]: {}".format(reply.message))
