@@ -24,6 +24,7 @@ class ChatServer(rpc.ChatServerServicer):
         # For every client a infinite loop starts (in gRPC's own managed thread)
         while True:
             # Check if there are any new messages
+            time.sleep(0.1)
             if self.accounts[request.username][0]:
                 while len(self.accounts[request.username][1]) > 0:
                     n = self.accounts[request.username][1].pop(0)
