@@ -145,7 +145,7 @@ class Client:
             print("1. Send a message")
             print("2. Deliver undelivered message")
             print("3. List accounts")
-            print("4. Delete an account (and logout)")
+            print("4. Delete account (and logout)")
             print("5. Logout")
             choice = input("Enter a command number (1-5): ")
 
