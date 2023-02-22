@@ -68,7 +68,7 @@ class ChatClient:
 
 
 # Interactive script below
-PORT=56799
+PORT=56789
 
 # Create an instance of the ChatClient class
 host = input("Enter host ip address: ")

@@ -35,7 +35,7 @@ class ChatServer:
     def receive(self, conn):
         return conn.recv(ChatServer.MSGLEN)
 
-    def __init__(self, host='localhost' , port=56799):
+    def __init__(self, host='localhost' , port=56789):
         self.host = socket.gethostbyname(socket.gethostname())
         self.port = port
         self.users = {}
