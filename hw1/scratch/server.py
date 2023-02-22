@@ -2,6 +2,7 @@ import socket
 import json
 import fnmatch
 import threading
+from collections import OrderedDict
 
 # define host and port for server
 # HOST = 'localhost'
@@ -38,21 +39,25 @@ class ChatServer:
     def __init__(self, host='localhost' , port=56789):
         self.host = socket.gethostbyname(socket.gethostname())
         self.port = port
-        self.users = {}
+        self.users = OrderedDict()
         self.active_users = {}
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind((host, port))
+        self.running = True
     
     def start(self):
         self.server.listen()
         print(f"[LISTENING] Server is listening on {self.host}:{self.port}")
-        while True:
+        while self.running:
             # accept client connection
             conn, addr = self.server.accept()
 
             # start a new thread to handle the connection
             thread = threading.Thread(target=self.handle_client, args=(conn, addr))
             thread.start()
+
+    def stop(self):
+        self.running = False
 
 
     def handle_client(self, conn, addr):
@@ -144,7 +149,8 @@ class ChatServer:
                 else:
                     # delete user account
                     del self.users[username]
-                    del self.active_users[username]
+                    if username in self.active_users:
+                        del self.active_users[username]
                     # notify client that account was deleted
                     conn.send(self.create_msg(cmd, body="Account deleted"))
                     # disconnect client
