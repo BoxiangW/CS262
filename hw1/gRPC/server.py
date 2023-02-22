@@ -7,7 +7,6 @@ import fnmatch
 import chat_pb2 as chat
 import chat_pb2_grpc as rpc
 
-HOST = 'localhost'
 PORT = 56789
 
 # inheriting here from the protobuf rpc file which is generated
@@ -29,7 +28,6 @@ class ChatServer(rpc.ChatServerServicer):
             # Check if there are any new messages
             if self.accounts[request.username][0]:
                 while len(self.accounts[request.username][1]) > 0:
-                    time.sleep(1)
                     n = self.accounts[request.username][1].pop(0)
                     yield n
 

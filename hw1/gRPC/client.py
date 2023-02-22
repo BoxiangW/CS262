@@ -24,8 +24,8 @@ class Client:
         n.username = self.username
         self.stream = self.conn.ChatStream(n)
         for note in self.stream:
-            time.sleep(0.1)
             print("\n[Receive]{}: {}".format(note.username, note.message))
+            print(time.time())
 
     def send_message(self):
         recipient = input("Enter the recipient's username: ")
@@ -40,6 +40,7 @@ class Client:
             n.username = self.username
             n.to = recipient
             n.message = message
+            print(time.time())
             reply = self.conn.SendMessage(n)  # send the Message to the server
             if reply.error:
                 print("[Error]: {}".format(reply.message))
