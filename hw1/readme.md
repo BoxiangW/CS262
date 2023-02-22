@@ -40,6 +40,10 @@ The client will prompt you to enter the host IP address.
 
 Once the connection is established, you can follow the prompts to create a new account, login, send messages, and perform other actions.
 
+### Unit Testing
+
+To run unit testing for the custom version, run `python -m unittest test_client.py` for client, and run `python test_server.py` for server.
+
 ### Functions
 
 Login: Log in to the chat app with a username.
