@@ -15,7 +15,15 @@ class VirtualMachine(threading.Thread):
         self.message_queue = queue.Queue()
         self.vm_list = vm_list
         self.logical_clock = 0
-        self.log = []
+        self.log_file = f"{self.name}.txt"
+        self.log(f"=============LOG START=============\n")
+
+    # def __del__(self):
+    #     self.log_file.close()
+
+    def log(self, msg):
+        with open(self.log_file, 'a+') as logfile:
+            logfile.write(msg)
 
     def run(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -27,9 +35,6 @@ class VirtualMachine(threading.Thread):
             data = client.recv(1024).decode()
             if data:
                 self.message_queue.put(data)
-                # global_clock = datetime.datetime.now()
-                # self.logical_clock = max(self.logical_clock, int(data)) + 1
-                # self.log.append(f"Received message {data}, Global time: {global_clock}, Message Queue Length: {self.message_queue.qsize()}, Logical Clock: {self.logical_clock}")
             client.close()
 
     def send_message(self, message, target):
@@ -39,14 +44,17 @@ class VirtualMachine(threading.Thread):
         sock.close()
         global_clock = datetime.datetime.now()
         self.logical_clock += 1
-        self.log.append(f"Sent message {message}, Global time: {global_clock}, Logical Clock: {self.logical_clock}")
+        log_message = f"Sent message {message}, Global time: {global_clock}, Logical Clock: {self.logical_clock}\n"
+        self.log(log_message)
 
     def tick(self):
         if not self.message_queue.empty():
             data = self.message_queue.get()
             global_clock = datetime.datetime.now()
+            # self.logical_clock += 1
             self.logical_clock = max(self.logical_clock, int(data)) + 1
-            self.log.append(f"Received message {data}, Global time: {global_clock}, Message Queue Length: {self.message_queue.qsize()}, Logical Clock: {self.logical_clock}")
+            log_message = f"Received message {data}, Global time: {global_clock}, Message Queue Length: {self.message_queue.qsize()}, Logical Clock: {self.logical_clock}\n"
+            self.log(log_message)
         else:
             event = random.randint(1, 10)
             if event == 1:
@@ -61,8 +69,13 @@ class VirtualMachine(threading.Thread):
             else:
                 global_clock = datetime.datetime.now()
                 self.logical_clock += 1
-                self.log.append(f"Internal event, Global time: {global_clock}, Logical Clock: {self.logical_clock}")
-        time.sleep(1 / self.clock_rate)
+                log_message = f"Internal event, Global time: {global_clock}, Logical Clock: {self.logical_clock}\n"
+                self.log(log_message)
+
+def handle_tick(vm, clockrate):
+    while True:
+        vm.tick()
+        time.sleep(1 / clockrate)
 
 def main():
     vm1 = VirtualMachine("VM1", "localhost", 8000, random.randint(1, 6), [])
@@ -73,10 +86,13 @@ def main():
     vm1.start()
     vm2.start()
     vm3.start()
-    while True:
-        vm1.tick()
-        vm2.tick()
-        vm3.tick()
+    vm1_clockrate = random.randint(1, 6)
+    vm2_clockrate = random.randint(1, 6)
+    vm3_clockrate = random.randint(1, 6)
+
+    threading.Thread(target=handle_tick, args=(vm1, vm1_clockrate)).start()
+    threading.Thread(target=handle_tick, args=(vm2, vm2_clockrate)).start()
+    threading.Thread(target=handle_tick, args=(vm3, vm3_clockrate)).start()
 
 if __name__ == '__main__':
     main()
