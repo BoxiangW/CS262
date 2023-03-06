@@ -1,11 +1,11 @@
-import threading
+import multiprocessing
 import random
 import time
 import socket
 import datetime
 
 
-class VirtualMachine(threading.Thread):
+class VirtualMachine(multiprocessing.Process):
     """Virtual machine for hw 2.
 
     Attributes:
@@ -28,7 +28,7 @@ class VirtualMachine(threading.Thread):
           port: Used to connect to the VM.
           vm_list: Used to send messages to other VMs.
         """
-        threading.Thread.__init__(self)
+        multiprocessing.Process.__init__(self)
         self.name = name
         self.host = host
         self.port = port
@@ -53,10 +53,10 @@ class VirtualMachine(threading.Thread):
             logfile.write(message)
 
     def run(self):
-        """Method representing the thread's activity.
+        """Method representing the process's activity.
 
-        Overide the run method of threading.Thread. See details at
-        https://docs.python.org/3/library/threading.html#threading.Thread.run
+        Overide the run method of multiprocessing.Process. See details at
+        https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Process.run
         """
         # create an INET, STREAMing socket
         self.receiver = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -151,7 +151,10 @@ if __name__ == '__main__':
     print("VM2 clock rate: ", vm2_clockrate)
     print("VM3 clock rate: ", vm3_clockrate)
 
-    # start threads
-    threading.Thread(target=handle_tick, args=(vm1, vm1_clockrate)).start()
-    threading.Thread(target=handle_tick, args=(vm2, vm2_clockrate)).start()
-    threading.Thread(target=handle_tick, args=(vm3, vm3_clockrate)).start()
+    # start processes
+    multiprocessing.Process(
+        target=handle_tick, args=(vm1, vm1_clockrate)).start()
+    multiprocessing.Process(
+        target=handle_tick, args=(vm2, vm2_clockrate)).start()
+    multiprocessing.Process(
+        target=handle_tick, args=(vm3, vm3_clockrate)).start()
