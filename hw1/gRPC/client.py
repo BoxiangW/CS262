@@ -157,10 +157,8 @@ class Client:
                 self.list_accounts()
             elif choice == "4":
                 self.delete_account()
-                break
             elif choice == "5":
                 self.logout()
-                break
             else:
                 print("Invalid command. Please try again.")
 
