@@ -1,0 +1,120 @@
+=============LOG START=============
+clock_rate = 2
+[Receive]: 1, [System time]: 2023-03-06 20:22:51.310795, [Message Queue Length]: 0, [Logical Clock Time]: 2
+[Receive]: 3, [System time]: 2023-03-06 20:22:51.811402, [Message Queue Length]: 0, [Logical Clock Time]: 4
+[Receive]: 5, [System time]: 2023-03-06 20:22:52.311961, [Message Queue Length]: 0, [Logical Clock Time]: 6
+[Receive]: 7, [System time]: 2023-03-06 20:22:52.812512, [Message Queue Length]: 0, [Logical Clock Time]: 8
+[Internal event], [System time]: 2023-03-06 20:22:53.313180, [Logical Clock Time]: 9
+[Receive]: 11, [System time]: 2023-03-06 20:22:53.813660, [Message Queue Length]: 1, [Logical Clock Time]: 12
+[Receive]: 11, [System time]: 2023-03-06 20:22:54.314322, [Message Queue Length]: 2, [Logical Clock Time]: 13
+[Receive]: 14, [System time]: 2023-03-06 20:22:54.814988, [Message Queue Length]: 4, [Logical Clock Time]: 15
+[Receive]: 15, [System time]: 2023-03-06 20:22:55.315551, [Message Queue Length]: 3, [Logical Clock Time]: 16
+[Receive]: 16, [System time]: 2023-03-06 20:22:55.816142, [Message Queue Length]: 3, [Logical Clock Time]: 17
+[Receive]: 17, [System time]: 2023-03-06 20:22:56.316749, [Message Queue Length]: 3, [Logical Clock Time]: 18
+[Receive]: 18, [System time]: 2023-03-06 20:22:56.817411, [Message Queue Length]: 3, [Logical Clock Time]: 19
+[Receive]: 23, [System time]: 2023-03-06 20:22:57.318031, [Message Queue Length]: 5, [Logical Clock Time]: 24
+[Receive]: 25, [System time]: 2023-03-06 20:22:57.818595, [Message Queue Length]: 4, [Logical Clock Time]: 26
+[Receive]: 26, [System time]: 2023-03-06 20:22:58.319171, [Message Queue Length]: 5, [Logical Clock Time]: 27
+[Receive]: 28, [System time]: 2023-03-06 20:22:58.819769, [Message Queue Length]: 5, [Logical Clock Time]: 29
+[Receive]: 30, [System time]: 2023-03-06 20:22:59.320403, [Message Queue Length]: 5, [Logical Clock Time]: 31
+[Receive]: 31, [System time]: 2023-03-06 20:22:59.820953, [Message Queue Length]: 4, [Logical Clock Time]: 32
+[Receive]: 35, [System time]: 2023-03-06 20:23:00.321509, [Message Queue Length]: 3, [Logical Clock Time]: 36
+[Receive]: 36, [System time]: 2023-03-06 20:23:00.822084, [Message Queue Length]: 2, [Logical Clock Time]: 37
+[Receive]: 38, [System time]: 2023-03-06 20:23:01.322699, [Message Queue Length]: 1, [Logical Clock Time]: 39
+[Receive]: 41, [System time]: 2023-03-06 20:23:01.823298, [Message Queue Length]: 1, [Logical Clock Time]: 42
+[Receive]: 54, [System time]: 2023-03-06 20:23:02.323855, [Message Queue Length]: 1, [Logical Clock Time]: 55
+[Receive]: 55, [System time]: 2023-03-06 20:23:02.824443, [Message Queue Length]: 0, [Logical Clock Time]: 56
+[Send]: 57, [System time]: 2023-03-06 20:23:03.325156, [Logical Clock Time]: 57
+[Internal event], [System time]: 2023-03-06 20:23:03.825666, [Logical Clock Time]: 58
+[Internal event], [System time]: 2023-03-06 20:23:04.326257, [Logical Clock Time]: 59
+[Receive]: 67, [System time]: 2023-03-06 20:23:04.826890, [Message Queue Length]: 0, [Logical Clock Time]: 68
+[Receive]: 71, [System time]: 2023-03-06 20:23:05.327508, [Message Queue Length]: 0, [Logical Clock Time]: 72
+[Receive]: 74, [System time]: 2023-03-06 20:23:05.828110, [Message Queue Length]: 0, [Logical Clock Time]: 75
+[Internal event], [System time]: 2023-03-06 20:23:06.328669, [Logical Clock Time]: 76
+[Receive]: 77, [System time]: 2023-03-06 20:23:06.829258, [Message Queue Length]: 0, [Logical Clock Time]: 78
+[Receive]: 80, [System time]: 2023-03-06 20:23:07.329870, [Message Queue Length]: 1, [Logical Clock Time]: 81
+[Receive]: 81, [System time]: 2023-03-06 20:23:07.830468, [Message Queue Length]: 0, [Logical Clock Time]: 82
+[Internal event], [System time]: 2023-03-06 20:23:08.331071, [Logical Clock Time]: 83
+[Receive]: 88, [System time]: 2023-03-06 20:23:08.831660, [Message Queue Length]: 0, [Logical Clock Time]: 89
+[Receive]: 89, [System time]: 2023-03-06 20:23:09.332256, [Message Queue Length]: 0, [Logical Clock Time]: 90
+[Send]: 91, [System time]: 2023-03-06 20:23:09.832955, [Logical Clock Time]: 91
+[Receive]: 94, [System time]: 2023-03-06 20:23:10.333495, [Message Queue Length]: 1, [Logical Clock Time]: 95
+[Receive]: 96, [System time]: 2023-03-06 20:23:10.834441, [Message Queue Length]: 0, [Logical Clock Time]: 97
+[Internal event], [System time]: 2023-03-06 20:23:11.334994, [Logical Clock Time]: 98
+[Receive]: 103, [System time]: 2023-03-06 20:23:11.835804, [Message Queue Length]: 0, [Logical Clock Time]: 104
+[Receive]: 101, [System time]: 2023-03-06 20:23:12.336366, [Message Queue Length]: 0, [Logical Clock Time]: 105
+[Receive]: 103, [System time]: 2023-03-06 20:23:12.836978, [Message Queue Length]: 1, [Logical Clock Time]: 106
+[Receive]: 107, [System time]: 2023-03-06 20:23:13.337552, [Message Queue Length]: 0, [Logical Clock Time]: 108
+[Receive]: 107, [System time]: 2023-03-06 20:23:13.838125, [Message Queue Length]: 0, [Logical Clock Time]: 109
+[Receive]: 110, [System time]: 2023-03-06 20:23:14.338714, [Message Queue Length]: 1, [Logical Clock Time]: 111
+[Receive]: 116, [System time]: 2023-03-06 20:23:14.839311, [Message Queue Length]: 2, [Logical Clock Time]: 117
+[Receive]: 117, [System time]: 2023-03-06 20:23:15.339927, [Message Queue Length]: 2, [Logical Clock Time]: 118
+[Receive]: 119, [System time]: 2023-03-06 20:23:15.835174, [Message Queue Length]: 2, [Logical Clock Time]: 120
+[Receive]: 120, [System time]: 2023-03-06 20:23:16.335751, [Message Queue Length]: 2, [Logical Clock Time]: 121
+[Receive]: 122, [System time]: 2023-03-06 20:23:16.836338, [Message Queue Length]: 2, [Logical Clock Time]: 123
+[Receive]: 126, [System time]: 2023-03-06 20:23:17.336923, [Message Queue Length]: 1, [Logical Clock Time]: 127
+[Receive]: 128, [System time]: 2023-03-06 20:23:17.837481, [Message Queue Length]: 1, [Logical Clock Time]: 129
+[Receive]: 134, [System time]: 2023-03-06 20:23:18.338061, [Message Queue Length]: 0, [Logical Clock Time]: 135
+[Receive]: 137, [System time]: 2023-03-06 20:23:18.838702, [Message Queue Length]: 0, [Logical Clock Time]: 138
+[Receive]: 141, [System time]: 2023-03-06 20:23:19.339296, [Message Queue Length]: 1, [Logical Clock Time]: 142
+[Receive]: 141, [System time]: 2023-03-06 20:23:19.839900, [Message Queue Length]: 0, [Logical Clock Time]: 143
+[Receive]: 145, [System time]: 2023-03-06 20:23:20.340501, [Message Queue Length]: 0, [Logical Clock Time]: 146
+[Receive]: 148, [System time]: 2023-03-06 20:23:20.841391, [Message Queue Length]: 0, [Logical Clock Time]: 149
+[Receive]: 150, [System time]: 2023-03-06 20:23:21.342066, [Message Queue Length]: 0, [Logical Clock Time]: 151
+[Receive]: 152, [System time]: 2023-03-06 20:23:21.843031, [Message Queue Length]: 0, [Logical Clock Time]: 153
+[Receive]: 155, [System time]: 2023-03-06 20:23:22.343765, [Message Queue Length]: 0, [Logical Clock Time]: 156
+[Receive]: 158, [System time]: 2023-03-06 20:23:22.844328, [Message Queue Length]: 0, [Logical Clock Time]: 159
+[Send]: 160, [System time]: 2023-03-06 20:23:23.345089, [Logical Clock Time]: 160
+[Receive]: 163, [System time]: 2023-03-06 20:23:23.845612, [Message Queue Length]: 0, [Logical Clock Time]: 164
+[Internal event], [System time]: 2023-03-06 20:23:24.346220, [Logical Clock Time]: 165
+[Receive]: 166, [System time]: 2023-03-06 20:23:24.846844, [Message Queue Length]: 1, [Logical Clock Time]: 167
+[Receive]: 170, [System time]: 2023-03-06 20:23:25.347416, [Message Queue Length]: 0, [Logical Clock Time]: 171
+[Receive]: 174, [System time]: 2023-03-06 20:23:25.848012, [Message Queue Length]: 0, [Logical Clock Time]: 175
+[Send]: 176, [System time]: 2023-03-06 20:23:26.348717, [Logical Clock Time]: 176
+[Receive]: 180, [System time]: 2023-03-06 20:23:26.849219, [Message Queue Length]: 0, [Logical Clock Time]: 181
+[Send]: 182, [System time]: 2023-03-06 20:23:27.349898, [Logical Clock Time]: 182
+[Receive]: 183, [System time]: 2023-03-06 20:23:27.850406, [Message Queue Length]: 1, [Logical Clock Time]: 184
+[Receive]: 185, [System time]: 2023-03-06 20:23:28.350968, [Message Queue Length]: 1, [Logical Clock Time]: 186
+[Receive]: 186, [System time]: 2023-03-06 20:23:28.851672, [Message Queue Length]: 0, [Logical Clock Time]: 187
+[Receive]: 191, [System time]: 2023-03-06 20:23:29.352522, [Message Queue Length]: 0, [Logical Clock Time]: 192
+[Receive]: 195, [System time]: 2023-03-06 20:23:29.853282, [Message Queue Length]: 0, [Logical Clock Time]: 196
+[Send]: 197, [System time]: 2023-03-06 20:23:30.353974, [Logical Clock Time]: 197
+[Internal event], [System time]: 2023-03-06 20:23:30.854452, [Logical Clock Time]: 198
+[Receive]: 201, [System time]: 2023-03-06 20:23:31.355093, [Message Queue Length]: 0, [Logical Clock Time]: 202
+[Receive]: 202, [System time]: 2023-03-06 20:23:31.856038, [Message Queue Length]: 0, [Logical Clock Time]: 203
+[Send]: 204, [System time]: 2023-03-06 20:23:32.356731, [Logical Clock Time]: 204
+[Send]: 205, [System time]: 2023-03-06 20:23:32.857273, [Logical Clock Time]: 205
+[Receive]: 209, [System time]: 2023-03-06 20:23:33.357775, [Message Queue Length]: 0, [Logical Clock Time]: 210
+[Receive]: 210, [System time]: 2023-03-06 20:23:33.858531, [Message Queue Length]: 2, [Logical Clock Time]: 211
+[Receive]: 213, [System time]: 2023-03-06 20:23:34.359731, [Message Queue Length]: 1, [Logical Clock Time]: 214
+[Receive]: 215, [System time]: 2023-03-06 20:23:34.860297, [Message Queue Length]: 0, [Logical Clock Time]: 216
+[Receive]: 219, [System time]: 2023-03-06 20:23:35.361031, [Message Queue Length]: 0, [Logical Clock Time]: 220
+[Receive]: 221, [System time]: 2023-03-06 20:23:35.861998, [Message Queue Length]: 0, [Logical Clock Time]: 222
+[Internal event], [System time]: 2023-03-06 20:23:36.362616, [Logical Clock Time]: 223
+[Receive]: 225, [System time]: 2023-03-06 20:23:36.863258, [Message Queue Length]: 1, [Logical Clock Time]: 226
+[Receive]: 226, [System time]: 2023-03-06 20:23:37.363872, [Message Queue Length]: 1, [Logical Clock Time]: 227
+[Receive]: 232, [System time]: 2023-03-06 20:23:37.864466, [Message Queue Length]: 0, [Logical Clock Time]: 233
+[Send]: 234, [System time]: 2023-03-06 20:23:38.365163, [Logical Clock Time]: 234
+[Internal event], [System time]: 2023-03-06 20:23:38.865620, [Logical Clock Time]: 235
+[Internal event], [System time]: 2023-03-06 20:23:39.366172, [Logical Clock Time]: 236
+[Receive]: 243, [System time]: 2023-03-06 20:23:39.866725, [Message Queue Length]: 1, [Logical Clock Time]: 244
+[Receive]: 244, [System time]: 2023-03-06 20:23:40.367292, [Message Queue Length]: 1, [Logical Clock Time]: 245
+[Receive]: 246, [System time]: 2023-03-06 20:23:40.867858, [Message Queue Length]: 1, [Logical Clock Time]: 247
+[Receive]: 248, [System time]: 2023-03-06 20:23:41.368448, [Message Queue Length]: 1, [Logical Clock Time]: 249
+[Receive]: 252, [System time]: 2023-03-06 20:23:41.869322, [Message Queue Length]: 1, [Logical Clock Time]: 253
+[Receive]: 253, [System time]: 2023-03-06 20:23:42.369963, [Message Queue Length]: 1, [Logical Clock Time]: 254
+[Receive]: 256, [System time]: 2023-03-06 20:23:42.870796, [Message Queue Length]: 1, [Logical Clock Time]: 257
+[Receive]: 257, [System time]: 2023-03-06 20:23:43.371479, [Message Queue Length]: 2, [Logical Clock Time]: 258
+[Receive]: 259, [System time]: 2023-03-06 20:23:43.872064, [Message Queue Length]: 2, [Logical Clock Time]: 260
+[Receive]: 262, [System time]: 2023-03-06 20:23:44.372642, [Message Queue Length]: 1, [Logical Clock Time]: 263
+[Receive]: 265, [System time]: 2023-03-06 20:23:44.873393, [Message Queue Length]: 2, [Logical Clock Time]: 266
+[Receive]: 268, [System time]: 2023-03-06 20:23:45.373903, [Message Queue Length]: 2, [Logical Clock Time]: 269
+[Receive]: 268, [System time]: 2023-03-06 20:23:45.879686, [Message Queue Length]: 1, [Logical Clock Time]: 270
+[Receive]: 269, [System time]: 2023-03-06 20:23:46.380260, [Message Queue Length]: 0, [Logical Clock Time]: 271
+[Receive]: 278, [System time]: 2023-03-06 20:23:46.881190, [Message Queue Length]: 0, [Logical Clock Time]: 279
+[Receive]: 281, [System time]: 2023-03-06 20:23:47.381840, [Message Queue Length]: 1, [Logical Clock Time]: 282
+[Receive]: 282, [System time]: 2023-03-06 20:23:47.882457, [Message Queue Length]: 1, [Logical Clock Time]: 283
+[Receive]: 285, [System time]: 2023-03-06 20:23:48.383005, [Message Queue Length]: 1, [Logical Clock Time]: 286
+[Receive]: 285, [System time]: 2023-03-06 20:23:48.883582, [Message Queue Length]: 0, [Logical Clock Time]: 287
+[Receive]: 293, [System time]: 2023-03-06 20:23:49.384172, [Message Queue Length]: 0, [Logical Clock Time]: 294
+[Receive]: 296, [System time]: 2023-03-06 20:23:49.884844, [Message Queue Length]: 0, [Logical Clock Time]: 297
