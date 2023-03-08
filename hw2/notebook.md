@@ -44,4 +44,25 @@
 
 ## Findings
 
-TODO
+### Original Settings
+
+For machines that have smaller clock rates, as the time goes by, it will take most of its time receiving meddages. Therefore, it will not be able to send messages to other VMs. This is because the VMs are not synchronized.
+
+**Size of Jumps**:
+
+For machines that has relatively larger clock rates, they will have smaller possibility to have logical clock time jumps and their gap will be smaller. For machines that has relatively smaller clock rates, they will have greater possibility to have logical clock time jumps and their gap will be larger.
+
+**Drifts**:
+
+Smaller clock rates will cause larger drifts because it is more likely to have logical clock time jumps and the gap is larger.
+
+**Length of message queue**:
+
+Smaller clock rates will have longer message queue because it has less chance to send messages to other VMs and it will take more time to deal with the messages in the queue.
+
+
+### Smaller variation in the clock cycles and a smaller probability of the event being internal
+
+In this case, smaller clock rates will have even greater possibility to have logical clock time jumps and their gap will be even larger, and their message queue will be even longer. Vice versa for larger clock rates.
+
+We found that a machine with relatively samller clock rate has an continusly increasing message queue till the end of the simulation. 
