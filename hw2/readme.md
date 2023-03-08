@@ -32,6 +32,8 @@ The `VirtualMachine` class has the following methods:
 
 To run the program, simply execute the `virtualmachine.py` file with Python 3.x. The code will execute on a single machine with 3 processes, each representing a virtual machine.
 
-`python virtualmachine.py` 
+```python
+python virtualmachine.py
+``` 
 
 The program will output the logs for each virtual machine to separate files in the format `VMx_log.txt`, where `x` is the virtual machine number.
