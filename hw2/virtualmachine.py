@@ -1,6 +1,5 @@
 from multiprocessing import Process
 from threading import Thread
-from _thread import *
 import random
 import time
 import socket
