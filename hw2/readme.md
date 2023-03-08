@@ -23,4 +23,15 @@ The `VirtualMachine` class has the following methods:
 -   `tick(self)`: This method is called by the `tick_thread` to perform the VM's activity. It processes messages if any, sends messages or performs internal events.
 -   `log(self, message)`: This method is used to log messages to the log file.
 
-Overall, the `VirtualMachine` class implements a basic distributed system where the VMs communicate with each other by exchanging messages. The implementation also includes mechanisms to handle concurrency using both threads and processes.
+### Installation
+
+1.  Clone the repository to your local machine using `git clone <repo link>`
+2.  Navigate to the cloned directory `cd <directory name>`
+
+### Usage
+
+To run the program, simply execute the `virtualmachine.py` file with Python 3.x. The code will execute on a single machine with 3 processes, each representing a virtual machine.
+
+`python virtualmachine.py` 
+
+The program will output the logs for each virtual machine to separate files in the format `VMx_log.txt`, where `x` is the virtual machine number.
