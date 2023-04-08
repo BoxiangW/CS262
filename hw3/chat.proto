@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package grpc;
+
+message Message {
+    string username = 1;
+    string to = 2;
+    string message = 3;
+}
+
+message Id {
+    string username = 1;
+}
+
+message ListAccounts {
+    string username = 1;
+    string wildcard = 2;
+}
+
+message CreateAccount {
+    string username = 1;
+}
+
+message DeliverMessages {
+    string username = 1;
+}
+
+message DeleteAccount {
+    string username = 1;
+}
+
+message Login {
+    string username = 1;
+}
+
+message Logout {
+    string username = 1;
+}
+
+message Reply {
+    string message = 1;
+    bool error = 2;
+}
+
+service ChatServer {
+    // This bi-directional stream makes it possible to send and receive Messages between 2 persons
+    rpc SendMessage (Message) returns (Reply);
+    rpc ChatStream (Id) returns (stream Message);
+    rpc SendListAccounts (ListAccounts) returns (Reply);
+    rpc SendCreateAccount (CreateAccount) returns (Reply);
+    rpc SendDeliverMessages (DeliverMessages) returns (Reply);
+    rpc SendDeleteAccount (DeleteAccount) returns (Reply);
+    rpc SendLogin (Login) returns (Reply);
+    rpc SendLogout (Logout) returns (Reply);
+}
