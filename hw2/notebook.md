@@ -63,6 +63,4 @@ Smaller clock rates will have longer message queue because it has less chance to
 
 ### Smaller variation in the clock cycles and a smaller probability of the event being internal
 
-In this case, smaller clock rates will have even greater possibility to have logical clock time jumps and their gap will be even larger, and their message queue will be even longer. Vice versa for larger clock rates.
-
-We found that a machine with relatively samller clock rate has an continusly increasing message queue till the end of the simulation. 
+In this case, virtualmachines will have smaller possibility to have logical clock time jumps and their gap will be smaller, and their message queue will be shorter. They are more synchronized.
