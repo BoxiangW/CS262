@@ -42,8 +42,20 @@ message Reply {
     bool error = 2;
 }
 
+message MyTuple {
+  string status = 1;
+  string username = 2;
+  string to = 3;
+  string message = 4;
+}
+
+message Update {
+    repeated MyTuple tup = 1;
+}
+
 service ChatServer {
     // This bi-directional stream makes it possible to send and receive Messages between 2 persons
+    rpc recvUpdate (Update) returns (Reply);
     rpc SendMessage (Message) returns (Reply);
     rpc ChatStream (Id) returns (stream Message);
     rpc SendListAccounts (ListAccounts) returns (Reply);
