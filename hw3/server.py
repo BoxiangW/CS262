@@ -4,6 +4,7 @@ import grpc
 import time
 import fnmatch
 import pickle
+import sys
 
 import chat_pb2 as chat
 import chat_pb2_grpc as rpc
@@ -11,6 +12,8 @@ import chat_pb2_grpc as rpc
 PORT = 56789
 
 FILENAME = 'log.bin'
+
+SERVER_ID = 1
 
 class ChatServer(rpc.ChatServerServicer):
 
@@ -23,6 +26,70 @@ class ChatServer(rpc.ChatServerServicer):
         self.log = []
         self.read_log_from_file()
         self.parse_log()
+
+        self.stubs = []
+        for i in range(2):
+            if i != SERVER_ID:
+                channel = grpc.insecure_channel('localhost' + ':' + str(PORT+i))
+                conn = rpc.ChatServerStub(channel)
+                self.stubs.append(conn)
+            else:
+                self.stubs.append(None)
+
+        self.is_master = True if SERVER_ID == 0 else False
+
+
+    def sendUpdate(self):
+        for i, stub in enumerate(self.stubs):
+            if stub is not None:
+                n = chat.Update()
+                temp_l = []
+                for status, req in self.log:
+                    tupl = chat.MyTuple()
+                    tupl.status = status
+                    if status == "ADD" or status == "LOGOUT_ADD":
+                        tupl.to = req.to
+                        tupl.username = req.username
+                        tupl.message = req.message
+                    else:
+                        tupl.to = "xxx"
+                        tupl.message = "xxx"
+                        tupl.username = req.username
+
+                    temp_l.append(tupl)
+
+                n.tup.extend(temp_l)
+                try:
+                    reply = stub.recvUpdate(n)  # send the Message to the server
+                    if reply.error:
+                        print("[Error]: {}".format(reply.message))
+                    else:
+                        print("[Update received by server]: {}".format(i))
+                except grpc.RpcError as e:
+                    print("server " + str(i) + " is down.")
+
+    def recvUpdate(self, request, context):
+        data = request.tup
+        n = len(data)
+        old_n = len(self.log)
+        for i in range(old_n, n):
+            status = data[i].status
+            req = chat.Message()
+            req.to = data[i].to
+            req.username = data[i].username
+            req.message = data[i].message
+            self.log.append((status, req))
+            self.log_to_file()
+        self.parse_log(index=old_n)
+        n = chat.Reply()
+        n.message = "Updated received!"
+        n.error = False
+
+        print(self.chats)
+        print(self.accounts)
+        print(self.logout_accounts)
+        return n
+                    
 
     # The stream which will be used to send new messages to clients
     def ChatStream(self, request, context):
@@ -91,9 +158,10 @@ class ChatServer(rpc.ChatServerServicer):
             n = chat.Reply()
             n.message = "Account created"
             n.error = False
-
+            print("1")
             self.log.append(("ACC_CREATE", request))
             self.log_to_file()
+            print("2")
             return n
 
     def SendDeliverMessages(self, request, context):
@@ -178,6 +246,8 @@ class ChatServer(rpc.ChatServerServicer):
     def log_to_file(self):
         with open(FILENAME, "ab+") as f:
             pickle.dump(self.log[-1], f)
+        if self.is_master:
+            self.sendUpdate()
 
         # # Debug only:
         # print(self.chats)
@@ -197,8 +267,8 @@ class ChatServer(rpc.ChatServerServicer):
         except IOError:
             return
 
-    def parse_log(self):
-        for tup in self.log:
+    def parse_log(self, index = 0):
+        for tup in self.log[index:]:
             status = tup[0]
             req = tup[1]
             if status == "ADD":
@@ -233,6 +303,9 @@ class ChatServer(rpc.ChatServerServicer):
     
             
 if __name__ == '__main__':
+    # Read server Id
+    SERVER_ID = int(sys.argv[1])
+    FILENAME = "log_" + str(SERVER_ID) + '.bin'
     # the workers is like the amount of threads that can be opened at the same time, when there are 10 clients connected
     # then no more clients able to connect to the server.
     server = grpc.server(futures.ThreadPoolExecutor(
@@ -241,7 +314,7 @@ if __name__ == '__main__':
         ChatServer(), server)  # register the server to gRPC
     # gRPC basically manages all the threading and server responding logic, which is perfect!
     print('Starting server. Listening...')
-    server.add_insecure_port('[::]:' + str(PORT))
+    server.add_insecure_port('[::]:' + str(PORT+SERVER_ID))
     server.start()
     # Server starts in background (in another thread) so keep waiting
     # if we don't wait here the main thread will end, which will end all the child threads, and thus the threads
