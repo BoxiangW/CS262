@@ -20,15 +20,15 @@ class ChatServer(rpc.ChatServerServicer):
         self.logout_accounts = {}  # {username: [chat.Message]}
 
     # The stream which will be used to send new messages to clients
-    def ChatStream(self, request, context):
+    def ChatStream(self, request_iterator, context):
         # For every client a infinite loop starts (in gRPC's own managed thread)
         while True:
             # Check if there are any new messages
-            time.sleep(0.1)
-            if self.accounts[request.username][0]:
-                while len(self.accounts[request.username][1]) > 0:
-                    n = self.accounts[request.username][1].pop(0)
-                    yield n
+            for request in request_iterator:
+                if self.accounts[request.username][0]:
+                    while len(self.accounts[request.username][1]) > 0:
+                        n = self.accounts[request.username][1].pop(0)
+                        yield n
 
     def SendMessage(self, request: chat.Message, context):
         # this is only for the server console

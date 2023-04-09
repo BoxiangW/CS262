@@ -19,7 +19,7 @@ class ChatServerStub(object):
                 request_serializer=chat__pb2.Message.SerializeToString,
                 response_deserializer=chat__pb2.Reply.FromString,
                 )
-        self.ChatStream = channel.unary_stream(
+        self.ChatStream = channel.stream_stream(
                 '/grpc.ChatServer/ChatStream',
                 request_serializer=chat__pb2.Id.SerializeToString,
                 response_deserializer=chat__pb2.Message.FromString,
@@ -66,7 +66,7 @@ class ChatServerServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def ChatStream(self, request, context):
+    def ChatStream(self, request_iterator, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -116,7 +116,7 @@ def add_ChatServerServicer_to_server(servicer, server):
                     request_deserializer=chat__pb2.Message.FromString,
                     response_serializer=chat__pb2.Reply.SerializeToString,
             ),
-            'ChatStream': grpc.unary_stream_rpc_method_handler(
+            'ChatStream': grpc.stream_stream_rpc_method_handler(
                     servicer.ChatStream,
                     request_deserializer=chat__pb2.Id.FromString,
                     response_serializer=chat__pb2.Message.SerializeToString,
@@ -179,7 +179,7 @@ class ChatServer(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def ChatStream(request,
+    def ChatStream(request_iterator,
             target,
             options=(),
             channel_credentials=None,
@@ -189,7 +189,7 @@ class ChatServer(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_stream(request, target, '/grpc.ChatServer/ChatStream',
+        return grpc.experimental.stream_stream(request_iterator, target, '/grpc.ChatServer/ChatStream',
             chat__pb2.Id.SerializeToString,
             chat__pb2.Message.FromString,
             options, channel_credentials,

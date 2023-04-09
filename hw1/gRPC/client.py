@@ -1,6 +1,6 @@
 import threading
-
 import grpc
+import time
 
 import chat_pb2 as chat
 import chat_pb2_grpc as rpc
@@ -17,16 +17,21 @@ class Client:
         # start the main loop
         self.first_loop()
 
+    def entry_request_iterator(self):
+        while True:
+            n = chat.Id(username=self.username)
+            yield n
+
     def _start_stream(self):
-        # this line will wait for new messages from the server!
-        n = chat.Id()
-        n.username = self.username
-        for note in self.conn.ChatStream(n):
-            print("\n[Receive]{}: {}".format(note.username, note.message))
+        # this line will wait for new messages from the server
+        while True:
+            for note in self.conn.ChatStream(self.entry_request_iterator()):
+                time.sleep(0.1)  # in case of message display overlap
+                print("[Receive]{}: {}".format(note.username, note.message))
 
     def send_message(self):
-        recipient = input("Enter the recipient's username: ")
-        message = input("Enter the message: ")
+        recipient = input("Enter the recipient's username: \n")
+        message = input("Enter the message: \n")
         if not recipient:
             print("Please enter a recipient.")
         elif not message:
@@ -53,7 +58,7 @@ class Client:
             print("[Deliver]: {}".format(reply.message))
 
     def list_accounts(self):
-        wildcard = input("Enter a wildcard (optional): ")
+        wildcard = input("Enter a wildcard (optional): \n")
         if not wildcard:
             wildcard = '*'
         n = chat.ListAccounts()
@@ -66,7 +71,7 @@ class Client:
             print("[List]: {}".format(reply.message))
 
     def create_account(self):
-        username = input("Enter the username to create: ")
+        username = input("Enter the username to create: \n")
         if not username:
             print("Please enter a username.")
         else:
@@ -95,7 +100,7 @@ class Client:
             exit()
 
     def login(self):
-        username = input("Enter the username to login: ")
+        username = input("Enter the username to login: \n")
         if not username:
             print("Please enter a username.")
         else:
@@ -128,7 +133,7 @@ class Client:
             print("1. Create an account")
             print("2. Login to an account")
             print("3. Exit")
-            choice = input("Enter a command number (1-3): ")
+            choice = input("Enter a command number (1-3): \n")
 
             if choice == "1":
                 self.create_account()
@@ -147,7 +152,7 @@ class Client:
             print("3. List accounts")
             print("4. Delete account (and logout)")
             print("5. Logout")
-            choice = input("Enter a command number (1-5): ")
+            choice = input("Enter a command number (1-5): \n")
 
             if choice == "1":
                 self.send_message()
