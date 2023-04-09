@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nchat.proto\x12\x04grpc\"8\n\x07Message\x12\x10\n\x08username\x18\x01 \x01(\t\x12\n\n\x02to\x18\x02 \x01(\t\x12\x0f\n\x07message\x18\x03 \x01(\t\"\x16\n\x02Id\x12\x10\n\x08username\x18\x01 \x01(\t\"2\n\x0cListAccounts\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08wildcard\x18\x02 \x01(\t\"!\n\rCreateAccount\x12\x10\n\x08username\x18\x01 \x01(\t\"#\n\x0f\x44\x65liverMessages\x12\x10\n\x08username\x18\x01 \x01(\t\"!\n\rDeleteAccount\x12\x10\n\x08username\x18\x01 \x01(\t\"\x19\n\x05Login\x12\x10\n\x08username\x18\x01 \x01(\t\"\x1a\n\x06Logout\x12\x10\n\x08username\x18\x01 \x01(\t\"\'\n\x05Reply\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\r\n\x05\x65rror\x18\x02 \x01(\x08\x32\x8e\x03\n\nChatServer\x12)\n\x0bSendMessage\x12\r.grpc.Message\x1a\x0b.grpc.Reply\x12\'\n\nChatStream\x12\x08.grpc.Id\x1a\r.grpc.Message0\x01\x12\x33\n\x10SendListAccounts\x12\x12.grpc.ListAccounts\x1a\x0b.grpc.Reply\x12\x35\n\x11SendCreateAccount\x12\x13.grpc.CreateAccount\x1a\x0b.grpc.Reply\x12\x39\n\x13SendDeliverMessages\x12\x15.grpc.DeliverMessages\x1a\x0b.grpc.Reply\x12\x35\n\x11SendDeleteAccount\x12\x13.grpc.DeleteAccount\x1a\x0b.grpc.Reply\x12%\n\tSendLogin\x12\x0b.grpc.Login\x1a\x0b.grpc.Reply\x12\'\n\nSendLogout\x12\x0c.grpc.Logout\x1a\x0b.grpc.Replyb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nchat.proto\x12\x04grpc\"8\n\x07Message\x12\x10\n\x08username\x18\x01 \x01(\t\x12\n\n\x02to\x18\x02 \x01(\t\x12\x0f\n\x07message\x18\x03 \x01(\t\"\x16\n\x02Id\x12\x10\n\x08username\x18\x01 \x01(\t\"2\n\x0cListAccounts\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08wildcard\x18\x02 \x01(\t\"\'\n\x05Reply\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\r\n\x05\x65rror\x18\x02 \x01(\x08\"\x1c\n\tReorgnize\x12\x0f\n\x07message\x18\x01 \x01(\t2\xe6\x02\n\nChatServer\x12)\n\x0bSendMessage\x12\r.grpc.Message\x1a\x0b.grpc.Reply\x12)\n\nChatStream\x12\x08.grpc.Id\x1a\r.grpc.Message(\x01\x30\x01\x12\x33\n\x10SendListAccounts\x12\x12.grpc.ListAccounts\x1a\x0b.grpc.Reply\x12*\n\x11SendCreateAccount\x12\x08.grpc.Id\x1a\x0b.grpc.Reply\x12,\n\x13SendDeliverMessages\x12\x08.grpc.Id\x1a\x0b.grpc.Reply\x12*\n\x11SendDeleteAccount\x12\x08.grpc.Id\x1a\x0b.grpc.Reply\x12\"\n\tSendLogin\x12\x08.grpc.Id\x1a\x0b.grpc.Reply\x12#\n\nSendLogout\x12\x08.grpc.Id\x1a\x0b.grpc.Replyb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'chat_pb2', globals())
@@ -26,18 +26,10 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _ID._serialized_end=100
   _LISTACCOUNTS._serialized_start=102
   _LISTACCOUNTS._serialized_end=152
-  _CREATEACCOUNT._serialized_start=154
-  _CREATEACCOUNT._serialized_end=187
-  _DELIVERMESSAGES._serialized_start=189
-  _DELIVERMESSAGES._serialized_end=224
-  _DELETEACCOUNT._serialized_start=226
-  _DELETEACCOUNT._serialized_end=259
-  _LOGIN._serialized_start=261
-  _LOGIN._serialized_end=286
-  _LOGOUT._serialized_start=288
-  _LOGOUT._serialized_end=314
-  _REPLY._serialized_start=316
-  _REPLY._serialized_end=355
-  _CHATSERVER._serialized_start=358
-  _CHATSERVER._serialized_end=756
+  _REPLY._serialized_start=154
+  _REPLY._serialized_end=193
+  _REORGNIZE._serialized_start=195
+  _REORGNIZE._serialized_end=223
+  _CHATSERVER._serialized_start=226
+  _CHATSERVER._serialized_end=584
 # @@protoc_insertion_point(module_scope)

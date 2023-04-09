@@ -17,51 +17,37 @@ message ListAccounts {
     string wildcard = 2;
 }
 
-message CreateAccount {
-    string username = 1;
-}
-
-message DeliverMessages {
-    string username = 1;
-}
-
-message DeleteAccount {
-    string username = 1;
-}
-
-message Login {
-    string username = 1;
-}
-
-message Logout {
-    string username = 1;
-}
-
 message Reply {
     string message = 1;
     bool error = 2;
 }
 
-message MyTuple {
-  string status = 1;
-  string username = 2;
-  string to = 3;
-  string message = 4;
+message Reorgnize {
+    int state = 1;
+    // bool error = 2;
 }
 
-message Update {
-    repeated MyTuple tup = 1;
-}
+// message MyTuple {
+//   string status = 1;
+//   string username = 2;
+//   string to = 3;
+//   string message = 4;
+// }
+
+// message Update {
+//     repeated MyTuple tup = 1;
+// }
 
 service ChatServer {
-    // This bi-directional stream makes it possible to send and receive Messages between 2 persons
-    rpc recvUpdate (Update) returns (Reply);
+    // rpc recvUpdate (Update) returns (Reply);
     rpc SendMessage (Message) returns (Reply);
-    rpc ChatStream (Id) returns (stream Message);
+    rpc ChatStream (stream Id) returns (stream Message);
     rpc SendListAccounts (ListAccounts) returns (Reply);
-    rpc SendCreateAccount (CreateAccount) returns (Reply);
-    rpc SendDeliverMessages (DeliverMessages) returns (Reply);
-    rpc SendDeleteAccount (DeleteAccount) returns (Reply);
-    rpc SendLogin (Login) returns (Reply);
-    rpc SendLogout (Logout) returns (Reply);
+    rpc SendCreateAccount (Id) returns (Reply);
+    rpc SendDeliverMessages (Id) returns (Reply);
+    rpc SendDeleteAccount (Id) returns (Reply);
+    rpc SendLogin (Id) returns (Reply);
+    rpc SendLogout (Id) returns (Reply);
+
+    rpc SendReorgnize (Reorgnize) returns (Reply);
 }
