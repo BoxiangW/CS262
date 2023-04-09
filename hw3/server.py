@@ -290,9 +290,8 @@ if __name__ == '__main__':
     rpc.add_ChatServerServicer_to_server(
         ChatServer(server_list, server_id, restart), server)  # register the server to gRPC
     # gRPC basically manages all the threading and server responding logic, which is perfect!
-    address = 'localhost:' + str(PORT+server_id)
-    print(f'Starting server at {address}. Listening...')
-    server.add_insecure_port(address)
+    print(f'Starting server at {server_list[server_id]}. Listening...')
+    server.add_insecure_port(server_list[server_id])
     server.start()
     # Server starts in background (in another thread) so keep waiting
     # if we don't wait here the main thread will end, which will end all the child threads, and thus the threads
