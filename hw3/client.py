@@ -1,7 +1,7 @@
 import threading
 import grpc
 import time
-import sys
+import os
 
 import chat_pb2 as chat
 import chat_pb2_grpc as rpc
@@ -14,6 +14,7 @@ class Client:
     def __init__(self, server_list):
         self.server_list = server_list
         self.master_index = 0
+        self.kill = False
         channel = grpc.insecure_channel(self.server_list[self.master_index])
         self.conn = rpc.ChatServerStub(channel)
         # start the main loop
@@ -27,6 +28,8 @@ class Client:
     def _start_stream(self):
         # this line will wait for new messages from the server!
         while True:
+            if self.kill:
+                os._exit(1)
             try:
                 for note in self.conn.ChatStream(self.entry_request_iterator()):
                     time.sleep(0.1)  # in case of message display overlap
@@ -110,10 +113,9 @@ class Client:
             if reply.error:
                 print("[Error]: {}".format(reply.message))
             else:
-                self.username = None
-                self.listener.join()
                 print("[Delete]: {}".format(reply.message))
-                sys.exit()
+                self.kill = True
+                os._exit(1)
         except grpc.RpcError as e:
             self.change_server()
 
@@ -141,33 +143,31 @@ class Client:
         n = chat.Id(username=self.username)
         try:
             reply = self.conn.SendLogout(n)
-        except grpc.RpcError as e:
-            self.change_server()
-        else:
             if reply.error:
                 print("[Error]: {}".format(reply.message))
             else:
-                self.username = None
-                self.listener.join()
                 print("[Logout]: {}".format(reply.message))
-                sys.exit()
+                self.kill = True
+                os._exit(1)
+        except grpc.RpcError as e:
+            self.change_server()
 
     def first_loop(self):
-        while True:
-            print("Available commands:")
-            print("1. Create an account")
-            print("2. Login to an account")
-            print("3. Exit")
-            choice = input("Enter a command number (1-3):\n")
+        print("Available commands:")
+        print("1. Create an account")
+        print("2. Login to an account")
+        print("3. Exit")
+        choice = input("Enter a command number (1-3):\n")
 
-            if choice == "1":
-                self.create_account()
-            elif choice == "2":
-                self.login()
-            elif choice == "3":
-                break
-            else:
-                print("Invalid command. Please try again.")
+        if choice == "1":
+            self.create_account()
+        elif choice == "2":
+            self.login()
+        elif choice == "3":
+            quit()
+        else:
+            print("Invalid command. Please try again.")
+            self.first_loop()
 
     def second_loop(self):
         while True:
@@ -193,6 +193,8 @@ class Client:
                 print("Invalid command. Please try again.")
 
     def change_server(self):
+        if self.kill:
+            os._exit(1)
         try:
             channel = grpc.insecure_channel(
                 self.server_list[1])
@@ -210,6 +212,6 @@ class Client:
 
 
 if __name__ == '__main__':
-    server_list = ['localhost:56789',
-                   'localhost:56790', 'localhost:56791']
+    server_list = ['10.250.111.7:56789',
+                   '10.250.111.7:56790', '10.250.111.7:56791']
     Client(server_list)

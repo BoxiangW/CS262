@@ -27,13 +27,13 @@ class ChatServer(rpc.ChatServerServicer):
         if restart:
             try:
                 self.readPersist()
-                print("Server restarted from persisted file.")
+                print("[Start] Server restarted from persisted file.")
             except FileNotFoundError:
                 self.persist()
-                print("No persist file found. Blank server created.")
+                print("[Start] No persist file found. Blank server created.")
         else:
             self.persist()
-            print("Blank server created.")
+            print("[Start] Blank server created.")
 
         self.servers = []
         for i in range(len(self.server_list)):
@@ -100,7 +100,6 @@ class ChatServer(rpc.ChatServerServicer):
             n = chat.Reply(message="Message sent", error=False)
 
         if self.is_master:
-            print("Sending message to all servers")
             for i, server in enumerate(self.servers):
                 if server:
                     try:
@@ -125,7 +124,6 @@ class ChatServer(rpc.ChatServerServicer):
                         # send the Message to the server
                         reply = server.SendListAccounts(request)
                         if reply != n:
-                            print(f"{reply} != {n}")
                             print(f"Error on server {i}")
                     except grpc.RpcError as e:
                         continue
@@ -147,25 +145,21 @@ class ChatServer(rpc.ChatServerServicer):
                     try:
                         reply = server.SendCreateAccount(request)
                         if reply != n:
-                            print(f"{reply} != {n}")
                             print(f"Error on server {i}")
                     except grpc.RpcError as e:
                         continue
         return n
 
     def SendDeliverMessages(self, request, context):
-        print("[Deliver] {}".format(request.username))
+
         try:
             self.logout_accounts[request.username]
         except:
-            n = chat.Reply()
-            n.message = "No messages to deliver"
-            n.error = True
-
+            n = chat.Reply(message="No messages to deliver", error=True)
         else:
-            if self.is_master:
-                self.accounts[request.username][1] += self.logout_accounts[request.username]
+            self.accounts[request.username][1] += self.logout_accounts[request.username]
             del self.logout_accounts[request.username]
+            print("[Deliver] {}".format(request.username))
             n = chat.Reply(message="Messages delivered", error=False)
             self.persist()
 
@@ -175,7 +169,6 @@ class ChatServer(rpc.ChatServerServicer):
                     try:
                         reply = server.SendDeliverMessages(request)
                         if reply != n:
-                            print(f"{reply} != {n}")
                             print(f"Error on server {i}")
                     except grpc.RpcError as e:
                         continue
@@ -207,7 +200,6 @@ class ChatServer(rpc.ChatServerServicer):
                     try:
                         reply = server.SendDeleteAccount(request)
                         if reply != n:
-                            print(f"{reply} != {n}")
                             print(f"Error on server {i}")
                     except grpc.RpcError as e:
                         continue
@@ -232,7 +224,6 @@ class ChatServer(rpc.ChatServerServicer):
                     try:
                         reply = server.SendLogin(request)
                         if reply != n:
-                            print(f"{reply} != {n}")
                             print(f"Error on server {i}")
                     except grpc.RpcError as e:
                         continue
@@ -251,7 +242,6 @@ class ChatServer(rpc.ChatServerServicer):
                     try:
                         reply = server.SendLogout(request)
                         if reply != n:
-                            print(f"{reply} != {n}")
                             print(f"Error on server {i}")
                     except grpc.RpcError as e:
                         continue
@@ -280,8 +270,8 @@ class ChatServer(rpc.ChatServerServicer):
 
 if __name__ == '__main__':
     # Read server Id
-    server_list = ['localhost:56789',
-                   'localhost:56790', 'localhost:56791']
+    server_list = ['10.250.111.7:56789',
+                   '10.250.111.7:56790', '10.250.111.7:56791']
     server_id = int(sys.argv[1])
     restart = int(sys.argv[2])
     # the workers is like the amount of threads that can be opened at the same time, when there are 10 clients connected
@@ -291,7 +281,8 @@ if __name__ == '__main__':
     rpc.add_ChatServerServicer_to_server(
         ChatServer(server_list, server_id, restart), server)  # register the server to gRPC
     # gRPC basically manages all the threading and server responding logic, which is perfect!
-    print(f'Starting server at {server_list[server_id]}. Listening...')
+    print(
+        f'[Address] Starting server at {server_list[server_id]}. Listening...')
     server.add_insecure_port(server_list[server_id])
     server.start()
     # Server starts in background (in another thread) so keep waiting
