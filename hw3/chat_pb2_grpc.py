@@ -57,7 +57,7 @@ class ChatServerStub(object):
                 )
         self.SendHeartbeat = channel.unary_unary(
                 '/grpc.ChatServer/SendHeartbeat',
-                request_serializer=chat__pb2.Id.SerializeToString,
+                request_serializer=chat__pb2.StatusChange.SerializeToString,
                 response_deserializer=chat__pb2.Reply.FromString,
                 )
         self.UpdateMessage = channel.unary_unary(
@@ -128,7 +128,7 @@ class ChatServerServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def SendHeartbeat(self, request, context):
-        """send a heartbeat to transfer slave to master
+        """send a heartbeat to transfer slave to master or master to slave
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -186,7 +186,7 @@ def add_ChatServerServicer_to_server(servicer, server):
             ),
             'SendHeartbeat': grpc.unary_unary_rpc_method_handler(
                     servicer.SendHeartbeat,
-                    request_deserializer=chat__pb2.Id.FromString,
+                    request_deserializer=chat__pb2.StatusChange.FromString,
                     response_serializer=chat__pb2.Reply.SerializeToString,
             ),
             'UpdateMessage': grpc.unary_unary_rpc_method_handler(
@@ -353,7 +353,7 @@ class ChatServer(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/grpc.ChatServer/SendHeartbeat',
-            chat__pb2.Id.SerializeToString,
+            chat__pb2.StatusChange.SerializeToString,
             chat__pb2.Reply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
