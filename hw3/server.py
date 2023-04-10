@@ -330,8 +330,10 @@ class ChatServer(rpc.ChatServerServicer):
         """
         if request.leader:
             self.is_master = True
+            print("[Status] Master")
         else:
             self.is_master = False
+            print("[Status] Slave")
 
         if self.is_master:
             for i, server in enumerate(self.servers):
@@ -341,7 +343,6 @@ class ChatServer(rpc.ChatServerServicer):
                         reply = server.SendHeartbeat(n)
                     except grpc.RpcError as e:
                         continue
-        print("[Status] Master")
         return chat.Reply(message="Heartbeat received", error=False)
 
     def persist(self):
