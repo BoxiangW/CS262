@@ -1,6 +1,7 @@
 import threading
 import grpc
 import time
+import sys
 
 import chat_pb2 as chat
 import chat_pb2_grpc as rpc
@@ -12,8 +13,8 @@ class Client:
 
     def __init__(self, server_list):
         self.server_list = server_list
-        # create a gRPC channel
-        channel = grpc.insecure_channel(self.server_list[0])
+        self.master_index = 0
+        channel = grpc.insecure_channel(self.server_list[self.master_index])
         self.conn = rpc.ChatServerStub(channel)
         # start the main loop
         self.first_loop()
@@ -25,9 +26,14 @@ class Client:
 
     def _start_stream(self):
         # this line will wait for new messages from the server!
-        for note in self.conn.ChatStream(self.entry_request_iterator()):
-            time.sleep(0.1)  # in case of message display overlap
-            print("[Receive]{}: {}".format(note.username, note.message))
+        while True:
+            try:
+                for note in self.conn.ChatStream(self.entry_request_iterator()):
+                    time.sleep(0.1)  # in case of message display overlap
+                    print("[Receive]{}: {}".format(
+                        note.username, note.message))
+            except:
+                self.change_server()
 
     def send_message(self):
         recipient = input("Enter the recipient's username:\n")
@@ -38,36 +44,43 @@ class Client:
             print("Please enter a message.")
         else:
             # create protobug message (called Message)
-            n = chat.Message()
-            n.username = self.username
-            n.to = recipient
-            n.message = message
-            reply = self.conn.SendMessage(n)  # send the Message to the server
-            if reply.error:
-                print("[Error]: {}".format(reply.message))
-            else:
-                print("[Send]: {}".format(reply.message))
+            n = chat.Message(username=self.username,
+                             to=recipient, message=message)
+            try:
+                # send the Message to the server
+                reply = self.conn.SendMessage(n)
+                if reply.error:
+                    print("[Error]: {}".format(reply.message))
+                else:
+                    print("[Send]: {}".format(reply.message))
+            except grpc.RpcError as e:
+                self.change_server()
 
     def deliver_message(self):
         n = chat.Id(username=self.username)
-        reply = self.conn.SendDeliverMessages(n)
-        if reply.error:
-            print("[Error]: {}".format(reply.message))
-        else:
-            print("[Deliver]: {}".format(reply.message))
+        try:
+            reply = self.conn.SendDeliverMessages(n)
+            if reply.error:
+                print("[Error]: {}".format(reply.message))
+            else:
+                print("[Deliver]: {}".format(reply.message))
+        except grpc.RpcError as e:
+            print(e)
+            self.change_server()
 
     def list_accounts(self):
         wildcard = input("Enter a wildcard (optional):\n")
         if not wildcard:
             wildcard = '*'
-        n = chat.ListAccounts()
-        n.username = self.username
-        n.wildcard = wildcard
-        reply = self.conn.SendListAccounts(n)
-        if reply.error:
-            print("[Error]: {}".format(reply.message))
-        else:
-            print("[List]: {}".format(reply.message))
+        n = chat.ListAccounts(username=self.username, wildcard=wildcard)
+        try:
+            reply = self.conn.SendListAccounts(n)
+            if reply.error:
+                print("[Error]: {}".format(reply.message))
+            else:
+                print("[List]: {}".format(reply.message))
+        except grpc.RpcError as e:
+            self.change_server()
 
     def create_account(self):
         username = input("Enter the username to create:\n")
@@ -75,26 +88,34 @@ class Client:
             print("Please enter a username.")
         else:
             n = chat.Id(username=username)
-            reply = self.conn.SendCreateAccount(n)
-            if reply.error:
-                print("[Error]: {}".format(reply.message))
-            else:
-                print("[Create]: {}".format(reply.message))
-                self.username = username
-                # create new listening thread for when new message streams come in
-                self.listener = threading.Thread(target=self._start_stream,
-                                                 daemon=True)
-                self.listener.start()
-                self.second_loop()
+            try:
+                reply = self.conn.SendCreateAccount(n)
+                if reply.error:
+                    print("[Error]: {}".format(reply.message))
+                else:
+                    print("[Create]: {}".format(reply.message))
+                    self.username = username
+                    # create new listening thread for when new message streams come in
+                    self.listener = threading.Thread(target=self._start_stream,
+                                                     daemon=True)
+                    self.listener.start()
+                    self.second_loop()
+            except:
+                self.change_server()
 
     def delete_account(self):
         n = chat.Id(username=self.username)
-        reply = self.conn.SendDeleteAccount(n)
-        if reply.error:
-            print("[Error]: {}".format(reply.message))
-        else:
-            print("[Delete]: {}".format(reply.message))
-            exit()
+        try:
+            reply = self.conn.SendDeleteAccount(n)
+            if reply.error:
+                print("[Error]: {}".format(reply.message))
+            else:
+                self.username = None
+                self.listener.join()
+                print("[Delete]: {}".format(reply.message))
+                sys.exit()
+        except grpc.RpcError as e:
+            self.change_server()
 
     def login(self):
         username = input("Enter the username to login:\n")
@@ -102,25 +123,34 @@ class Client:
             print("Please enter a username.")
         else:
             n = chat.Id(username=username)
-            reply = self.conn.SendLogin(n)
-            if reply.error:
-                print("[Error]: {}".format(reply.message))
-            else:
-                print("[Login]: {}".format(reply.message))
-                self.username = username
-                self.listener = threading.Thread(target=self._start_stream,
-                                                 daemon=True)
-                self.listener.start()
-                self.second_loop()
+            try:
+                reply = self.conn.SendLogin(n)
+                if reply.error:
+                    print("[Error]: {}".format(reply.message))
+                else:
+                    print("[Login]: {}".format(reply.message))
+                    self.username = username
+                    self.listener = threading.Thread(target=self._start_stream,
+                                                     daemon=True)
+                    self.listener.start()
+                    self.second_loop()
+            except grpc.RpcError as e:
+                self.change_server()
 
     def logout(self):
         n = chat.Id(username=self.username)
-        reply = self.conn.SendLogout(n)
-        if reply.error:
-            print("[Error]: {}".format(reply.message))
+        try:
+            reply = self.conn.SendLogout(n)
+        except grpc.RpcError as e:
+            self.change_server()
         else:
-            print("[Logout]: {}".format(reply.message))
-            exit()
+            if reply.error:
+                print("[Error]: {}".format(reply.message))
+            else:
+                self.username = None
+                self.listener.join()
+                print("[Logout]: {}".format(reply.message))
+                sys.exit()
 
     def first_loop(self):
         while True:
@@ -162,8 +192,24 @@ class Client:
             else:
                 print("Invalid command. Please try again.")
 
+    def change_server(self):
+        try:
+            channel = grpc.insecure_channel(
+                self.server_list[1])
+            self.conn = rpc.ChatServerStub(channel)
+            n = chat.Id(username=self.username)
+            self.conn.SendHeartbeat(n)
+            print('[Switch]: Switched to server 2')
+        except:
+            channel = grpc.insecure_channel(
+                self.server_list[2])
+            self.conn = rpc.ChatServerStub(channel)
+            n = chat.Id(username=self.username)
+            self.conn.SendHeartbeat(n)
+            print('[Switch]: Switched to server 3')
+
 
 if __name__ == '__main__':
     server_list = ['localhost:56789',
-                   'localhost:56790', '10.250.102.255:56791']
+                   'localhost:56790', 'localhost:56791']
     Client(server_list)

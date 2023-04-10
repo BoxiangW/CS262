@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nchat.proto\x12\x04grpc\"8\n\x07Message\x12\x10\n\x08username\x18\x01 \x01(\t\x12\n\n\x02to\x18\x02 \x01(\t\x12\x0f\n\x07message\x18\x03 \x01(\t\"\x16\n\x02Id\x12\x10\n\x08username\x18\x01 \x01(\t\"2\n\x0cListAccounts\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08wildcard\x18\x02 \x01(\t\"\'\n\x05Reply\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\r\n\x05\x65rror\x18\x02 \x01(\x08\"\x1c\n\tReorgnize\x12\x0f\n\x07message\x18\x01 \x01(\t2\xe6\x02\n\nChatServer\x12)\n\x0bSendMessage\x12\r.grpc.Message\x1a\x0b.grpc.Reply\x12)\n\nChatStream\x12\x08.grpc.Id\x1a\r.grpc.Message(\x01\x30\x01\x12\x33\n\x10SendListAccounts\x12\x12.grpc.ListAccounts\x1a\x0b.grpc.Reply\x12*\n\x11SendCreateAccount\x12\x08.grpc.Id\x1a\x0b.grpc.Reply\x12,\n\x13SendDeliverMessages\x12\x08.grpc.Id\x1a\x0b.grpc.Reply\x12*\n\x11SendDeleteAccount\x12\x08.grpc.Id\x1a\x0b.grpc.Reply\x12\"\n\tSendLogin\x12\x08.grpc.Id\x1a\x0b.grpc.Reply\x12#\n\nSendLogout\x12\x08.grpc.Id\x1a\x0b.grpc.Replyb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nchat.proto\x12\x04grpc\"8\n\x07Message\x12\x10\n\x08username\x18\x01 \x01(\t\x12\n\n\x02to\x18\x02 \x01(\t\x12\x0f\n\x07message\x18\x03 \x01(\t\"\x16\n\x02Id\x12\x10\n\x08username\x18\x01 \x01(\t\"2\n\x0cListAccounts\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08wildcard\x18\x02 \x01(\t\"\'\n\x05Reply\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\r\n\x05\x65rror\x18\x02 \x01(\x08\"\x1b\n\tHeartbeat\x12\x0e\n\x06leader\x18\x01 \x01(\x08\x32\xbd\x03\n\nChatServer\x12)\n\x0bSendMessage\x12\r.grpc.Message\x1a\x0b.grpc.Reply\x12)\n\nChatStream\x12\x08.grpc.Id\x1a\r.grpc.Message(\x01\x30\x01\x12\x33\n\x10SendListAccounts\x12\x12.grpc.ListAccounts\x1a\x0b.grpc.Reply\x12*\n\x11SendCreateAccount\x12\x08.grpc.Id\x1a\x0b.grpc.Reply\x12,\n\x13SendDeliverMessages\x12\x08.grpc.Id\x1a\x0b.grpc.Reply\x12*\n\x11SendDeleteAccount\x12\x08.grpc.Id\x1a\x0b.grpc.Reply\x12\"\n\tSendLogin\x12\x08.grpc.Id\x1a\x0b.grpc.Reply\x12#\n\nSendLogout\x12\x08.grpc.Id\x1a\x0b.grpc.Reply\x12-\n\rSendHeartbeat\x12\x0f.grpc.Heartbeat\x1a\x0b.grpc.Reply\x12&\n\rUpdateMessage\x12\x08.grpc.Id\x1a\x0b.grpc.Replyb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'chat_pb2', globals())
@@ -28,8 +28,8 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _LISTACCOUNTS._serialized_end=152
   _REPLY._serialized_start=154
   _REPLY._serialized_end=193
-  _REORGNIZE._serialized_start=195
-  _REORGNIZE._serialized_end=223
-  _CHATSERVER._serialized_start=226
-  _CHATSERVER._serialized_end=584
+  _HEARTBEAT._serialized_start=195
+  _HEARTBEAT._serialized_end=222
+  _CHATSERVER._serialized_start=225
+  _CHATSERVER._serialized_end=670
 # @@protoc_insertion_point(module_scope)

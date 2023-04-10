@@ -6,18 +6,7 @@ import chat_pb2 as chat__pb2
 
 
 class ChatServerStub(object):
-    """message MyTuple {
-    string status = 1;
-    string username = 2;
-    string to = 3;
-    string message = 4;
-    }
-
-    message Update {
-    repeated MyTuple tup = 1;
-    }
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
         """Constructor.
@@ -65,21 +54,20 @@ class ChatServerStub(object):
                 request_serializer=chat__pb2.Id.SerializeToString,
                 response_deserializer=chat__pb2.Reply.FromString,
                 )
+        self.SendHeartbeat = channel.unary_unary(
+                '/grpc.ChatServer/SendHeartbeat',
+                request_serializer=chat__pb2.Heartbeat.SerializeToString,
+                response_deserializer=chat__pb2.Reply.FromString,
+                )
+        self.UpdateMessage = channel.unary_unary(
+                '/grpc.ChatServer/UpdateMessage',
+                request_serializer=chat__pb2.Id.SerializeToString,
+                response_deserializer=chat__pb2.Reply.FromString,
+                )
 
 
 class ChatServerServicer(object):
-    """message MyTuple {
-    string status = 1;
-    string username = 2;
-    string to = 3;
-    string message = 4;
-    }
-
-    message Update {
-    repeated MyTuple tup = 1;
-    }
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def SendMessage(self, request, context):
         """rpc recvUpdate (Update) returns (Reply);
@@ -130,6 +118,18 @@ class ChatServerServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SendHeartbeat(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def UpdateMessage(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ChatServerServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -173,6 +173,16 @@ def add_ChatServerServicer_to_server(servicer, server):
                     request_deserializer=chat__pb2.Id.FromString,
                     response_serializer=chat__pb2.Reply.SerializeToString,
             ),
+            'SendHeartbeat': grpc.unary_unary_rpc_method_handler(
+                    servicer.SendHeartbeat,
+                    request_deserializer=chat__pb2.Heartbeat.FromString,
+                    response_serializer=chat__pb2.Reply.SerializeToString,
+            ),
+            'UpdateMessage': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpdateMessage,
+                    request_deserializer=chat__pb2.Id.FromString,
+                    response_serializer=chat__pb2.Reply.SerializeToString,
+            ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
             'grpc.ChatServer', rpc_method_handlers)
@@ -181,18 +191,7 @@ def add_ChatServerServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class ChatServer(object):
-    """message MyTuple {
-    string status = 1;
-    string username = 2;
-    string to = 3;
-    string message = 4;
-    }
-
-    message Update {
-    repeated MyTuple tup = 1;
-    }
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     @staticmethod
     def SendMessage(request,
@@ -325,6 +324,40 @@ class ChatServer(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/grpc.ChatServer/SendLogout',
+            chat__pb2.Id.SerializeToString,
+            chat__pb2.Reply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SendHeartbeat(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/grpc.ChatServer/SendHeartbeat',
+            chat__pb2.Heartbeat.SerializeToString,
+            chat__pb2.Reply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def UpdateMessage(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/grpc.ChatServer/UpdateMessage',
             chat__pb2.Id.SerializeToString,
             chat__pb2.Reply.FromString,
             options, channel_credentials,

@@ -22,21 +22,10 @@ message Reply {
     bool error = 2;
 }
 
-message Reorgnize {
-    int state = 1;
-    // bool error = 2;
+message Heartbeat {
+    bool leader = 1;
 }
 
-// message MyTuple {
-//   string status = 1;
-//   string username = 2;
-//   string to = 3;
-//   string message = 4;
-// }
-
-// message Update {
-//     repeated MyTuple tup = 1;
-// }
 
 service ChatServer {
     // rpc recvUpdate (Update) returns (Reply);
@@ -49,5 +38,6 @@ service ChatServer {
     rpc SendLogin (Id) returns (Reply);
     rpc SendLogout (Id) returns (Reply);
 
-    rpc SendReorgnize (Reorgnize) returns (Reply);
+    rpc SendHeartbeat (Heartbeat) returns (Reply);
+    rpc UpdateMessage (Id) returns (Reply);
 }
