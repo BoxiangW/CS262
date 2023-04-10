@@ -224,14 +224,14 @@ class Client:
             channel = grpc.insecure_channel(
                 self.server_list[1])
             self.conn = rpc.ChatServerStub(channel)
-            n = chat.Id(username=self.username)
+            n = chat.StatusChange(leader=True)
             self.conn.SendHeartbeat(n)
             print('[Switch]: Switched to server 2')
         except:
             channel = grpc.insecure_channel(
                 self.server_list[2])
             self.conn = rpc.ChatServerStub(channel)
-            n = chat.Id(username=self.username)
+            n = chat.StatusChange(leader=True)
             self.conn.SendHeartbeat(n)
             print('[Switch]: Switched to server 3')
 

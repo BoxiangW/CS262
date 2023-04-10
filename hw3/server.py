@@ -83,18 +83,18 @@ class ChatServer(rpc.ChatServerServicer):
                         # wait for all servers to respond
                         for i, server in enumerate(self.servers):
                             if server:
-                                try:
-                                    reply = server.UpdateMessage(request)
-                                except grpc.RpcError as e:
-                                    continue
-                                # while True:
-                                #     try:
-                                #         reply = server.UpdateMessage(request)
-                                #     except grpc.RpcError as e:
-                                #         break
-                                #     else:
-                                #         if reply.error:
-                                #             break
+                                # try:
+                                #     reply = server.UpdateMessage(request)
+                                # except grpc.RpcError as e:
+                                #     continue
+                                while True:
+                                    try:
+                                        reply = server.UpdateMessage(request)
+                                    except grpc.RpcError as e:
+                                        break
+                                    else:
+                                        if reply.error:
+                                            break
                         n = self.accounts[request.username][1].pop(0)
                         self.persist()
                         yield n
@@ -328,7 +328,19 @@ class ChatServer(rpc.ChatServerServicer):
           request: chat.Id contains sender username.
           context: A grpc context. See chat_pb2_grpc.py for more details.
         """
-        self.is_master = True
+        if request.leader:
+            self.is_master = True
+        else:
+            self.is_master = False
+
+        if self.is_master:
+            for i, server in enumerate(self.servers):
+                if server is not None:
+                    try:
+                        n = chat.StatusChange(leader=False)
+                        reply = server.SendHeartbeat(n)
+                    except grpc.RpcError as e:
+                        continue
         print("[Status] Master")
         return chat.Reply(message="Heartbeat received", error=False)
 

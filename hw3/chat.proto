@@ -22,6 +22,10 @@ message Reply { // reply to client
     bool error = 2;
 }
 
+message StatusChange { // Change server status
+    bool leader = 1;
+}
+
 
 service ChatServer { // Server for hw3
     rpc SendMessage (Message) returns (Reply); // send a message to a user
@@ -32,6 +36,6 @@ service ChatServer { // Server for hw3
     rpc SendDeleteAccount (Id) returns (Reply); // delete an account
     rpc SendLogin (Id) returns (Reply); // login to an account
     rpc SendLogout (Id) returns (Reply); // logout of an account
-    rpc SendHeartbeat (Id) returns (Reply); // send a heartbeat to transfer slave to master
+    rpc SendHeartbeat (StatusChange) returns (Reply); // send a heartbeat to transfer slave to master or master to slave
     rpc UpdateMessage (Id) returns (Reply); // update message to slave server
 }
