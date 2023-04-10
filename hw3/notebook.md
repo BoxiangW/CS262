@@ -23,13 +23,13 @@ Main Idea:
 
 1. The main idea for us to achieve replication is to ensure when the main server is down, one of the backup servers can become the main server and have exactly the same state as the main server.
 2. In order for us to achieve this, we used the idea of a **master-slave replication**. That is, we have a master server and several slave servers. Each write request to the server (any client requests that requires the change of state for the server, such as new client register, message sent, etc) will require all slave servers to be synchronized on the change for master to perform the change of state.
-3. We do this by propagating this request to the slave servers upon receiving the request, only when **all **slave servers confirm this change, then the master server can make this change and confirm with the client.
+3. We do this by propagating this request to the slave servers upon receiving the request, only when **all** slave servers confirm this change, then the master server can make this change and confirm with the client.
 
 Protobuf (chat.proto):
 
 
 
-1. No change was made to the protobuf file. We reused our previous designed type.
+1. Added `UpdateMessage` and `SendHeartbeat` to the protobuf file. `UpdateMessage` is used to make sure slave servers have the same list of undelivered message after master deliver them to clients, and `SendHeartbeat` is used for server status transformation.
 
 Server:
 
