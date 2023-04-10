@@ -2,42 +2,36 @@ syntax = "proto3";
 
 package grpc;
 
-message Message {
+message Message { // message to send
     string username = 1;
     string to = 2;
     string message = 3;
 }
 
-message Id {
+message Id { // sender username
     string username = 1;
 }
 
-message ListAccounts {
+message ListAccounts {  // list accounts with optional wildcard
     string username = 1;
     string wildcard = 2;
 }
 
-message Reply {
+message Reply { // reply to client
     string message = 1;
     bool error = 2;
 }
 
-message Heartbeat {
-    bool leader = 1;
-}
 
-
-service ChatServer {
-    // rpc recvUpdate (Update) returns (Reply);
-    rpc SendMessage (Message) returns (Reply);
-    rpc ChatStream (stream Id) returns (stream Message);
-    rpc SendListAccounts (ListAccounts) returns (Reply);
-    rpc SendCreateAccount (Id) returns (Reply);
-    rpc SendDeliverMessages (Id) returns (Reply);
-    rpc SendDeleteAccount (Id) returns (Reply);
-    rpc SendLogin (Id) returns (Reply);
-    rpc SendLogout (Id) returns (Reply);
-
-    rpc SendHeartbeat (Heartbeat) returns (Reply);
-    rpc UpdateMessage (Id) returns (Reply);
+service ChatServer { // Server for hw3
+    rpc SendMessage (Message) returns (Reply); // send a message to a user
+    rpc ChatStream (stream Id) returns (stream Message); // stream of messages for a user
+    rpc SendListAccounts (ListAccounts) returns (Reply); // list all accounts
+    rpc SendCreateAccount (Id) returns (Reply); // create an account
+    rpc SendDeliverMessages (Id) returns (Reply); // deliver messages to a user
+    rpc SendDeleteAccount (Id) returns (Reply); // delete an account
+    rpc SendLogin (Id) returns (Reply); // login to an account
+    rpc SendLogout (Id) returns (Reply); // logout of an account
+    rpc SendHeartbeat (Id) returns (Reply); // send a heartbeat to transfer slave to master
+    rpc UpdateMessage (Id) returns (Reply); // update message to slave server
 }
