@@ -6,7 +6,8 @@ import chat_pb2 as chat__pb2
 
 
 class ChatServerStub(object):
-    """Missing associated documentation comment in .proto file."""
+    """Server for hw3
+    """
 
     def __init__(self, channel):
         """Constructor.
@@ -56,7 +57,7 @@ class ChatServerStub(object):
                 )
         self.SendHeartbeat = channel.unary_unary(
                 '/grpc.ChatServer/SendHeartbeat',
-                request_serializer=chat__pb2.Heartbeat.SerializeToString,
+                request_serializer=chat__pb2.Id.SerializeToString,
                 response_deserializer=chat__pb2.Reply.FromString,
                 )
         self.UpdateMessage = channel.unary_unary(
@@ -67,65 +68,75 @@ class ChatServerStub(object):
 
 
 class ChatServerServicer(object):
-    """Missing associated documentation comment in .proto file."""
+    """Server for hw3
+    """
 
     def SendMessage(self, request, context):
-        """rpc recvUpdate (Update) returns (Reply);
+        """send a message to a user
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ChatStream(self, request_iterator, context):
-        """Missing associated documentation comment in .proto file."""
+        """stream of messages for a user
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SendListAccounts(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """list all accounts
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SendCreateAccount(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """create an account
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SendDeliverMessages(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """deliver messages to a user
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SendDeleteAccount(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """delete an account
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SendLogin(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """login to an account
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SendLogout(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """logout of an account
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SendHeartbeat(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """send a heartbeat to transfer slave to master
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def UpdateMessage(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """update message to slave server
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -175,7 +186,7 @@ def add_ChatServerServicer_to_server(servicer, server):
             ),
             'SendHeartbeat': grpc.unary_unary_rpc_method_handler(
                     servicer.SendHeartbeat,
-                    request_deserializer=chat__pb2.Heartbeat.FromString,
+                    request_deserializer=chat__pb2.Id.FromString,
                     response_serializer=chat__pb2.Reply.SerializeToString,
             ),
             'UpdateMessage': grpc.unary_unary_rpc_method_handler(
@@ -191,7 +202,8 @@ def add_ChatServerServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class ChatServer(object):
-    """Missing associated documentation comment in .proto file."""
+    """Server for hw3
+    """
 
     @staticmethod
     def SendMessage(request,
@@ -341,7 +353,7 @@ class ChatServer(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/grpc.ChatServer/SendHeartbeat',
-            chat__pb2.Heartbeat.SerializeToString,
+            chat__pb2.Id.SerializeToString,
             chat__pb2.Reply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

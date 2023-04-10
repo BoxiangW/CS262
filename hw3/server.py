@@ -5,19 +5,34 @@ import time
 import fnmatch
 import pickle
 import sys
-import json
 
 import chat_pb2 as chat
 import chat_pb2_grpc as rpc
 
-PORT = 56789
 DEBUG = False
 
 
 class ChatServer(rpc.ChatServerServicer):
+    """Class representing a single server for hw 3.
+
+    Attributes:
+        server_list: A list of string contains servers' ip address and port number.
+        server_id: An integer indicates current master server.
+        bin_file: A string of the bin file name.
+        accounts: A dict of accounts' details including online status and undelivered messages.
+        logout_accounts: A dict of undelivered messages for logged out accounts.
+        servers: A list of connection with other servers.
+        is_master: A boolean indicates whether is master itself.
+    """
 
     def __init__(self, server_list, server_id, restart):
-        # List with all the accounts
+        """Initializes the instance with basic settings.
+
+        Args:
+          server_list: Used to send messages to all the possible master servers.
+          server_id: Used to identify the server.
+          restart: Used to determine whether to restart from persisted file.
+        """
         self.server_list = server_list
         self.server_id = server_id
         self.bin_file = "log_" + str(self.server_id) + ".bin"
@@ -52,13 +67,20 @@ class ChatServer(rpc.ChatServerServicer):
             self.is_master = False
             print("[Status] Slave")
 
-    def ChatStream(self, request_iterator, context):
+    def ChatStream(self, request_iterator: chat.Id, context) -> chat.Message:
+        """Bidirectional streaming RPC for continuously deliver messages.
+
+        Args:
+          request_iterator: An iterator of chat.Id.
+          context: A grpc context. See chat_pb2_grpc.py for more details.
+        """
         # For every client a infinite loop starts (in gRPC's own managed thread)
         while True:
             # Check if there are any new messages
             for request in request_iterator:
                 if self.accounts[request.username][0]:
                     while len(self.accounts[request.username][1]) > 0:
+                        # wait for all servers to respond
                         for i, server in enumerate(self.servers):
                             if server:
                                 while True:
@@ -73,7 +95,13 @@ class ChatServer(rpc.ChatServerServicer):
                         self.persist()
                         yield n
 
-    def UpdateMessage(self, request, context):
+    def UpdateMessage(self, request: chat.Id, context) -> chat.Reply:
+        """Unary RPC for slave servers to update remaining messages.
+
+        Args:
+          request: An iterator of chat.Id.
+          context: A grpc context. See chat_pb2_grpc.py for more details.
+        """
         if len(self.accounts[request.username][1]) > 0:
             self.accounts[request.username][1].pop(0)
             n = chat.Reply(message="Message updated", error=False)
@@ -82,15 +110,18 @@ class ChatServer(rpc.ChatServerServicer):
             n = chat.Reply(message="Message not updated", error=True)
         return n
 
-    def SendMessage(self, request: chat.Message, context):
-        # this is only for the server console
-        print("[Message] {} to {}: {}".format(
-            request.username, request.to, request.message))
-        # Add it to the chat history
+    def SendMessage(self, request: chat.Message, context) -> chat.Reply:
+        """Unary RPC for store messages in servers.
+
+        Args:
+          request: chat.Message contains message details including sender, receiver and message.
+          context: A grpc context. See chat_pb2_grpc.py for more details.
+        """
         if request.to not in self.accounts:
             n = chat.Reply(message="Recipient not registered", error=True)
-
         else:
+            print("[Message] {} to {}: {}".format(
+                request.username, request.to, request.message))
             if self.accounts[request.to][0]:
                 self.accounts[request.to][1].append(request)
                 self.persist()
@@ -99,6 +130,7 @@ class ChatServer(rpc.ChatServerServicer):
                 self.persist()
             n = chat.Reply(message="Message sent", error=False)
 
+        # wait for all servers to respond
         if self.is_master:
             for i, server in enumerate(self.servers):
                 if server:
@@ -110,18 +142,24 @@ class ChatServer(rpc.ChatServerServicer):
                         continue
         return n
 
-    def SendListAccounts(self, request: chat.ListAccounts, context):
-        # this is only for the server console
+    def SendListAccounts(self, request: chat.ListAccounts, context) -> chat.Reply:
+        """Unary RPC for requesting list of accounts with optional wildcards.
+
+        Args:
+          request: chat.Message contains details including sender username, and optional wildcard.
+          context: A grpc context. See chat_pb2_grpc.py for more details.
+        """
         print("[List] {}: {}".format(request.username, request.wildcard))
         matching_accounts = fnmatch.filter(
             list(self.accounts.keys()), request.wildcard)
         matching_accounts = ", ".join(matching_accounts)
         n = chat.Reply(message=matching_accounts, error=False)
+
+        # wait for all servers to respond
         if self.is_master:
             for i, server in enumerate(self.servers):
                 if server is not None:
                     try:
-                        # send the Message to the server
                         reply = server.SendListAccounts(request)
                         if reply != n:
                             print(f"Error on server {i}")
@@ -130,7 +168,13 @@ class ChatServer(rpc.ChatServerServicer):
 
         return n
 
-    def SendCreateAccount(self, request, context):
+    def SendCreateAccount(self, request: chat.Id, context) -> chat.Reply:
+        """Unary RPC for creating accounts.
+
+        Args:
+          request: chat.Id contains sender username.
+          context: A grpc context. See chat_pb2_grpc.py for more details.
+        """
         print("[Create] {}".format(request.username))
         if request.username in self.accounts:
             n = chat.Reply(message="Username already taken", error=True)
@@ -139,6 +183,7 @@ class ChatServer(rpc.ChatServerServicer):
             n = chat.Reply(message="Account created", error=False)
             self.persist()
 
+        # wait for all servers to respond
         if self.is_master:
             for i, server in enumerate(self.servers):
                 if server is not None:
@@ -150,8 +195,13 @@ class ChatServer(rpc.ChatServerServicer):
                         continue
         return n
 
-    def SendDeliverMessages(self, request, context):
+    def SendDeliverMessages(self, request: chat.Id, context) -> chat.Reply:
+        """Unary RPC for requesting a delivery of undelivered messages.
 
+        Args:
+          request: chat.Id contains sender username.
+          context: A grpc context. See chat_pb2_grpc.py for more details.
+        """
         try:
             self.logout_accounts[request.username]
         except:
@@ -163,6 +213,7 @@ class ChatServer(rpc.ChatServerServicer):
             n = chat.Reply(message="Messages delivered", error=False)
             self.persist()
 
+        # wait for all servers to respond
         if self.is_master:
             for i, server in enumerate(self.servers):
                 if server is not None:
@@ -174,7 +225,13 @@ class ChatServer(rpc.ChatServerServicer):
                         continue
         return n
 
-    def SendDeleteAccount(self, request, context):
+    def SendDeleteAccount(self, request: chat.Id, context) -> chat.Reply:
+        """Unary RPC for deleting accounts.
+
+        Args:
+          request: chat.Id contains sender username.
+          context: A grpc context. See chat_pb2_grpc.py for more details.
+        """
         try:
             self.logout_accounts[request.username]
         except:
@@ -194,6 +251,7 @@ class ChatServer(rpc.ChatServerServicer):
                 n = chat.Reply(message="Account deleted", error=False)
                 self.persist()
 
+        # wait for all servers to respond
         if self.is_master:
             for i, server in enumerate(self.servers):
                 if server is not None:
@@ -205,7 +263,13 @@ class ChatServer(rpc.ChatServerServicer):
                         continue
         return n
 
-    def SendLogin(self, request, context):
+    def SendLogin(self, request: chat.Id, context) -> chat.Reply:
+        """Unary RPC for accounts login.
+
+        Args:
+          request: chat.Id contains sender username.
+          context: A grpc context. See chat_pb2_grpc.py for more details.
+        """
         if request.username not in self.accounts:
             n = chat.Reply(message="Username not found", error=True)
         elif self.accounts[request.username][0] == True:
@@ -213,11 +277,10 @@ class ChatServer(rpc.ChatServerServicer):
         else:
             self.accounts[request.username][0] = True
             print("[Login] {}".format(request.username))
-            n = chat.Reply()
-            n.message = "Login successful"
-            n.error = False
+            n = chat.Reply(message="Login successful", error=False)
             self.persist()
 
+        # wait for all servers to respond
         if self.is_master:
             for i, server in enumerate(self.servers):
                 if server is not None:
@@ -229,13 +292,20 @@ class ChatServer(rpc.ChatServerServicer):
                         continue
         return n
 
-    def SendLogout(self, request, context):
+    def SendLogout(self, request: chat.Id, context) -> chat.Reply:
+        """Unary RPC for accounts logout.
+
+        Args:
+          request: chat.Id contains sender username.
+          context: A grpc context. See chat_pb2_grpc.py for more details.
+        """
         self.accounts[request.username][0] = False
         self.logout_accounts[request.username] = []
         print("[Logout] {}".format(request.username))
         n = chat.Reply(message="Logout successful", error=False)
         self.persist()
 
+        # wait for all servers to respond
         if self.is_master:
             for i, server in enumerate(self.servers):
                 if server is not None:
@@ -247,13 +317,19 @@ class ChatServer(rpc.ChatServerServicer):
                         continue
         return n
 
-    def SendHeartbeat(self, request, context):
+    def SendHeartbeat(self, request: chat.Id, context) -> chat.Reply:
+        """Unary RPC for server status transformation.
+
+        Args:
+          request: chat.Id contains sender username.
+          context: A grpc context. See chat_pb2_grpc.py for more details.
+        """
         self.is_master = True
         print("[Status] Master")
-        n = chat.Reply(message="Heartbeat received", error=False)
-        return n
+        return chat.Reply(message="Heartbeat received", error=False)
 
     def persist(self):
+        """Persist the accounts and logout_accounts dictionaries to a binary file."""
         with open(self.bin_file, "wb") as outfile:
             pickle.dump(self.accounts, outfile)
             pickle.dump(self.logout_accounts, outfile)
@@ -263,13 +339,13 @@ class ChatServer(rpc.ChatServerServicer):
             print(self.logout_accounts)
 
     def readPersist(self):
+        """Read the accounts and logout_accounts dictionaries from a binary file."""
         with open(self.bin_file, "rb") as infile:
             self.accounts = pickle.load(infile)
             self.logout_accounts = pickle.load(infile)
 
 
 if __name__ == '__main__':
-    # Read server Id
     server_list = ['10.250.111.7:56789',
                    '10.250.111.7:56790', '10.250.111.7:56791']
     server_id = int(sys.argv[1])
