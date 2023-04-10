@@ -364,8 +364,8 @@ class ChatServer(rpc.ChatServerServicer):
 
 if __name__ == '__main__':
     # Read server Id
-    server_list = ['10.250.143.2:56789',
-                   '10.250.143.2:56790', '10.250.102.255:56791']
+    server_list = ['10.250.111.7:56789',
+                   '10.250.111.7:56790', '10.250.102.255:56791']
     server_id = int(sys.argv[1])
     restart = int(sys.argv[2])
     # the workers is like the amount of threads that can be opened at the same time, when there are 10 clients connected
