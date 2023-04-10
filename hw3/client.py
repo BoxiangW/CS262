@@ -13,7 +13,7 @@ class Client:
 
     def __init__(self, server_list):
         self.server_list = server_list
-        self.master_index = 0
+        self.master_index = 1
         self.kill = False
         channel = grpc.insecure_channel(self.server_list[self.master_index])
         self.conn = rpc.ChatServerStub(channel)
@@ -212,6 +212,6 @@ class Client:
 
 
 if __name__ == '__main__':
-    server_list = ['10.250.111.7:56789',
-                   '10.250.111.7:56790', '10.250.111.7:56791']
+    server_list = ['10.250.143.2:56789',
+                   '10.250.143.2:56790', '10.250.102.255:56791']
     Client(server_list)

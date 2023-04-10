@@ -61,14 +61,18 @@ class ChatServer(rpc.ChatServerServicer):
                     while len(self.accounts[request.username][1]) > 0:
                         for i, server in enumerate(self.servers):
                             if server:
-                                while True:
-                                    try:
-                                        reply = server.UpdateMessage(request)
-                                    except grpc.RpcError as e:
-                                        break
-                                    else:
-                                        if not reply.error:
-                                            break
+                                try:
+                                    reply = server.UpdateMessage(request)
+                                except grpc.RpcError as e:
+                                    continue
+                                # while True:
+                                #     try:
+                                #         reply = server.UpdateMessage(request)
+                                #     except grpc.RpcError as e:
+                                #         break
+                                #     else:
+                                #         if reply.error:
+                                #             break
                         n = self.accounts[request.username][1].pop(0)
                         self.persist()
                         yield n
@@ -270,8 +274,8 @@ class ChatServer(rpc.ChatServerServicer):
 
 if __name__ == '__main__':
     # Read server Id
-    server_list = ['10.250.111.7:56789',
-                   '10.250.111.7:56790', '10.250.111.7:56791']
+    server_list = ['10.250.143.2:56789',
+                   '10.250.143.2:56790', '10.250.102.255:56791']
     server_id = int(sys.argv[1])
     restart = int(sys.argv[2])
     # the workers is like the amount of threads that can be opened at the same time, when there are 10 clients connected
