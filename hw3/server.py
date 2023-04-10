@@ -83,10 +83,6 @@ class ChatServer(rpc.ChatServerServicer):
                         # wait for all servers to respond
                         for i, server in enumerate(self.servers):
                             if server:
-                                # try:
-                                #     reply = server.UpdateMessage(request)
-                                # except grpc.RpcError as e:
-                                #     continue
                                 while True:
                                     try:
                                         reply = server.UpdateMessage(request)
@@ -330,10 +326,8 @@ class ChatServer(rpc.ChatServerServicer):
         """
         if request.leader:
             self.is_master = True
-            print("[Status] Master")
         else:
             self.is_master = False
-            print("[Status] Slave")
 
         if self.is_master:
             for i, server in enumerate(self.servers):
