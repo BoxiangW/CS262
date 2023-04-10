@@ -63,5 +63,10 @@ On the server side, we do not need to have them communicating with each other fo
 Server:
 
 
+1. SendHeartbeat(), we added this function so that the client can notify the newly elected master.
+2. Upon receiving this confirmation from client, the new master change its status to master.
 
-1. 
+Client:
+
+1. change_server() function allows client to call the heartbeat function on the newly elected server's stub.
+2. Upon changing, the client also print out a message letting the user know the new server's ID.
